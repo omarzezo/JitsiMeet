@@ -10,10 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:test_video_conference/cache_helper.dart';
 import 'package:test_video_conference/constants.dart';
-import 'package:test_video_conference/home_screen.dart';
-import 'package:test_video_conference/join_meeting%20_screen.dart';
-import 'package:test_video_conference/otp_screen.dart';
-import 'package:test_video_conference/send_mobile_screen.dart';
+import 'package:test_video_conference/screens/home_screen.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
 
 class MyHttpOverrides extends HttpOverrides{

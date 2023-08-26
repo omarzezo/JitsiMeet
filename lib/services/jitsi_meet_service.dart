@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 // import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
 import 'package:test_video_conference/common_methods.dart';
-import 'package:test_video_conference/web_view_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 

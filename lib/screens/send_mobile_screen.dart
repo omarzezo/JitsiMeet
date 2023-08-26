@@ -8,7 +8,7 @@ import 'package:test_video_conference/cache_helper.dart';
 import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/constants.dart';
 import 'package:test_video_conference/models/response_model.dart';
-import 'package:test_video_conference/otp_screen.dart';
+import 'package:test_video_conference/screens/otp_screen.dart';
 import 'package:test_video_conference/services/jitsi_meet_service.dart';
 import 'package:test_video_conference/widgets/p_appbar.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
