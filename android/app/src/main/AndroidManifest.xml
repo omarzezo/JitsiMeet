@@ -2,22 +2,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.videoconference.test_video_conference">
 <!--    android:name="${applicationName}"-->
-    <uses-sdk tools:overrideLibrary="dev.saibotma.jitsi_meet_wrapper, org.jitsi.meet.sdk, co.apptailor.googlesignin, com.calendarevents, com.reactnativecommunity.asyncstorage, com.reactnativecommunity.netinfo, com.rnimmersive, com.corbt.keepawake, com.BV.LinearGradient, com.horcrux.svg, com.oney.WebRTCModule, com.ocetnik.timer, com.kevinresol.react_native_default_preference, com.learnium.RNDeviceInfo, com.amplitude.reactnative, com.reactnativegooglesignin, com.reactnativecommunity.clipboard, com.swmansion.gesturehandler.react, org.linusu, org.reactnative.maskedview, com.reactnativepagerview, com.oblador.performance, com.swmansion.reanimated, com.th3rdwave.safeareacontext, com.swmansion.rnscreens, com.reactnativecommunity.slider, org.devio.rn.splashscreen, com.brentvatne.react, com.reactnativecommunity.webview"/>
+<!--    <uses-sdk tools:overrideLibrary="dev.saibotma.jitsi_meet_wrapper, org.jitsi.meet.sdk, co.apptailor.googlesignin, com.calendarevents, com.reactnativecommunity.asyncstorage, com.reactnativecommunity.netinfo, com.rnimmersive, com.corbt.keepawake, com.BV.LinearGradient, com.horcrux.svg, com.oney.WebRTCModule, com.ocetnik.timer, com.kevinresol.react_native_default_preference, com.learnium.RNDeviceInfo, com.amplitude.reactnative, com.reactnativegooglesignin, com.reactnativecommunity.clipboard, com.swmansion.gesturehandler.react, org.linusu, org.reactnative.maskedview, com.reactnativepagerview, com.oblador.performance, com.swmansion.reanimated, com.th3rdwave.safeareacontext, com.swmansion.rnscreens, com.reactnativecommunity.slider, org.devio.rn.splashscreen, com.brentvatne.react, com.reactnativecommunity.webview"/>-->
+<!--    <uses-permission android:name="android.permission.INTERNET"/>-->
+<!--    <uses-permission android:name="android.permission.CAMERA" />-->
+<!--    <uses-feature android:name="android.hardware.camera"/>-->
+<!--    <uses-permission android:name="android.permission.RECORD_AUDIO"/>-->
+<!--    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>-->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />-->
+    <!--    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION"/>
+
     <application
        tools:replace="android:label"
        android:name="${applicationName}"
         android:label="test_video_conference"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true"
+        android:allowBackup="false"
+        android:fullBackupOnly="false"
+        android:hasFragileUserData="false"
+        android:usesCleartextTraffic="true">
 
-       <service
-           android:name="org.jitsi.meet.sdk.ConnectionService"
-           android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"
-           android:exported="true">
-           <intent-filter>
-               <action android:name="android.telecom.ConnectionService" />
-           </intent-filter>
-       </service>
+<!--       <service-->
+<!--           android:name="org.jitsi.meet.sdk.ConnectionService"-->
+<!--           android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE"-->
+<!--           android:exported="true">-->
+<!--           <intent-filter>-->
+<!--               <action android:name="android.telecom.ConnectionService" />-->
+<!--           </intent-filter>-->
+<!--       </service>-->
 
         <activity
             android:exported="true"

@@ -7,8 +7,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
 
 showLoader({bool canInteract = true}){
-  // EasyLoading.instance.userInteractions = canInteract;
-  EasyLoading.instance.userInteractions = false;
+  EasyLoading.instance.userInteractions = canInteract;
+  // EasyLoading.instance.userInteractions = false;
   EasyLoading.instance.maskType = EasyLoadingMaskType.clear;
   if(EasyLoading.isShow){
     // EasyLoadings.dismiss();

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -47,9 +48,11 @@ class _OtpScreenState extends State<OtpScreen> {
                   Response res= await JitsiMeetService().sendOTP(mobile:CacheHelper.getData(key:'mobile')??'',otp:pin??'');
                   if(res.statusCode==200||res.statusCode==201){
                     ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
-                    handleCallbackMsg(res,context);
                     if(model.success!=null&&model.success!){
+                      handleCallbackMsg(res,context);
                       Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
+                    }else{
+                      ElegantNotification.error(title: Text('Error'),description: Text(model.msg??'')).show(context);
                     }
                   }
                 }

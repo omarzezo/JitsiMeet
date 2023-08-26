@@ -2,6 +2,7 @@
 class Assets {
   Assets._();
 
+  static const String htmlCall = 'assets/html/call.html';
   static const String imgAppIcon = 'assets/img/app_icon.png';
   static const String imgBanner1 = 'assets/img/banner_1.png';
   static const String imgBanner2 = 'assets/img/banner_2.png';
