@@ -3,19 +3,40 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
 // import 'package:jitsi_meeting_plus/jitsi_meet_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_video_conference/cache_helper.dart';
+import 'package:test_video_conference/constants.dart';
+import 'package:test_video_conference/home_screen.dart';
+import 'package:test_video_conference/join_meeting%20_screen.dart';
+import 'package:test_video_conference/otp_screen.dart';
+import 'package:test_video_conference/send_mobile_screen.dart';
+import 'package:test_video_conference/widgets/p_button.dart';
 
-
-
-void main() => runApp(MyApp());
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+Future<void> main() async {
+  HttpOverrides.global = MyHttpOverrides();
+  configLoading();
+  WidgetsFlutterBinding.ensureInitialized();
+  await CacheHelper.init();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: Meeting());
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Meeting());
   }
 }
 
@@ -53,15 +74,8 @@ class _MeetingState extends State<Meeting> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Test Video Conference'),
-        ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: buildMeetConfig(),
-        )
-      ),
+      home:HomeScreen(),
+      builder:EasyLoading.init(),
     );
   }
 
@@ -494,4 +508,24 @@ class _MeetingState extends State<Meeting> {
   // doc_verify_url = getFlagsData("doc_verify")+"/"+room+"/"+participant_id+"/"+localStorage.getItem('language');
   // }
 
+}
+
+
+Future<void> configLoading() async {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 500)
+    ..indicatorType = EasyLoadingIndicatorType.circle
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 38.0
+    ..radius = 0.0
+    ..progressWidth=0.2
+    ..progressColor = Constants.yellow
+    ..backgroundColor = Colors.transparent
+    ..boxShadow = <BoxShadow>[]
+    ..maskType=EasyLoadingMaskType.clear
+    ..indicatorColor = Constants.yellow
+    ..textColor = Colors.white
+    ..maskColor = Colors.grey[100]
+    ..userInteractions = true
+    ..dismissOnTap = false;
 }
