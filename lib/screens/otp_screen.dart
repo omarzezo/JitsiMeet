@@ -71,7 +71,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   recognizer: TapGestureRecognizer()..onTap = () async {
                     Response res= await JitsiMeetService().sendMobileNumber(mobile:CacheHelper.getData(key: 'mobile'));
                     if(res.statusCode==200||res.statusCode==201){
-                      ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
+                      // ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
                       handleCallbackMsg(res,context);
                     }
                     }),

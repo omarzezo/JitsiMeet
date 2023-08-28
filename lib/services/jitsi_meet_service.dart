@@ -32,7 +32,7 @@ class JitsiMeetService {
     return response;
   }
 
-  Future<void> joinMeeting({required BuildContext context,required String name,required String meetignId,
+  Future<http.Response> joinMeeting({required BuildContext context,required String name,required String meetignId,
     required String mobile,required String otp}) async {
     showLoader();
       final queryParameters = {'name':name,'phone':mobile, 'otp':otp};
@@ -41,33 +41,33 @@ class JitsiMeetService {
       var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
       print("Url>>"+uri.scheme+'://'+uri.host+uri.path.toString());
       log("respIs>>"+response.body);
-      final data = jsonDecode(response.body);
-      final meeting = data['data']['meeting'];
-      final config = data['data']['config'];
-      final meetingName = meeting['name'];
-      final email = meeting['email'];
-      final meetingId = meeting['m_id'];
-      final conferenceUrl = data['data']['conference_url'];
-      final participantId = meeting['participant_id'];
-      // String? serverUrl = "https://" + conferenceUrl + "/";
-      String? serverUrl = 'https://worlditevents.com/';
-      // String? serverUrl = 'https://ris.opp.gov.om/';
-      // Map valueMap = jsonDecode(config.toString());
-      //   print("config>"+jsonEncode(config));
-      bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
-      bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
-      // print("conferenceUrl>>"+conferenceUrl.toString());
-      // Map<FeatureFlag, Object> featureFlags = {};
-      // if (Platform.isAndroid) {
-      //   featureFlags[FeatureFlag.isCallIntegrationEnabled] = false;
-      // } else if (Platform.isIOS) {
-      //   featureFlags[FeatureFlag.isPipEnabled] = false;
-      // }
-    dismissLoader();
-      String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-
-      print("urlurlurl>>"+url);
-      launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+    //   final data = jsonDecode(response.body);
+    //   final meeting = data['data']['meeting'];
+    //   final config = data['data']['config'];
+    //   final meetingName = meeting['name'];
+    //   final email = meeting['email'];
+    //   final meetingId = meeting['m_id'];
+    //   final conferenceUrl = data['data']['conference_url'];
+    //   final participantId = meeting['participant_id'];
+    //   // String? serverUrl = "https://" + conferenceUrl + "/";
+    //   String? serverUrl = 'https://worlditevents.com/';
+    //   // String? serverUrl = 'https://ris.opp.gov.om/';
+    //   // Map valueMap = jsonDecode(config.toString());
+    //   //   print("config>"+jsonEncode(config));
+    //   bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
+    //   bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
+    //   // print("conferenceUrl>>"+conferenceUrl.toString());
+    //   // Map<FeatureFlag, Object> featureFlags = {};
+    //   // if (Platform.isAndroid) {
+    //   //   featureFlags[FeatureFlag.isCallIntegrationEnabled] = false;
+    //   // } else if (Platform.isIOS) {
+    //   //   featureFlags[FeatureFlag.isPipEnabled] = false;
+    //   // }
+    // dismissLoader();
+    //   String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+    //
+    //   print("urlurlurl>>"+url);
+    //   launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
       // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WebViewScreen(url)));
       // var options = JitsiMeetingOptions(
       //   roomNameOrUrl:meetingId,
@@ -137,5 +137,16 @@ class JitsiMeetService {
       }catch(e){
         print("errrr>>"+e.toString());
       }
+      return response;
+  }
+
+  Future<http.Response> getStatusParticipant({required String participantId}) async {
+    showLoader();
+    print("urlIs>>"+"${baseURL}/get_status/$participantId");
+    var response = await http.get(Uri.parse("${baseURL}/get_status/$participantId"),
+        headers: {'Content-Type': 'application/json','Accept': 'application/json',});
+    print("responseIS>>"+response.body);
+    dismissLoader();
+    return response;
   }
 }
