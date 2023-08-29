@@ -9,8 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 class JitsiMeetService {
-  final baseURL ='https://interrog.opp.gov.om/api';
-  // final baseURL ='https://opp.ijmeet.com/api';
+  // final baseURL ='https://interrog.opp.gov.om/api';
+  final baseURL ='https://opp.ijmeet.com/api';
 
   Future<http.Response> sendMobileNumber({required String mobile}) async {
     showLoader();
@@ -36,8 +36,8 @@ class JitsiMeetService {
     required String mobile,required String otp}) async {
     showLoader();
       final queryParameters = {'name':name,'phone':mobile, 'otp':otp};
-      final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
-      // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
+      // final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+      final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
       var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
       print("Url>>"+uri.scheme+'://'+uri.host+uri.path.toString());
       log("respIs>>"+response.body);
