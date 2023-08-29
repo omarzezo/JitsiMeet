@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:test_video_conference/cache_helper.dart';
 import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/constants.dart';
 import 'package:test_video_conference/models/waiting_response_model.dart';
+import 'package:test_video_conference/screens/web_view_screen.dart';
 import 'package:test_video_conference/services/jitsi_meet_service.dart';
 import 'package:test_video_conference/widgets/p_appbar.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
@@ -50,7 +52,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
           Navigator.pop(context);
           dismissLoader();
         },title:'Leave',fillColor:Colors.transparent,textColor:Constants.red,style:PStyle.tertiary,)
-      ]),
+      ],),
       body:Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal:16),
@@ -95,9 +97,14 @@ class _WaitingScreenState extends State<WaitingScreen> {
         bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
         bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
         dismissLoader();
-        String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name??''}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+        // String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name??''}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+        String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name??''}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
         print("urlurlurl>>"+url);
-        launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
+            PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
+          Navigator.pop(context);
+        });
       }else{
         // here is the code  400
         if(res!=null){
@@ -126,13 +133,25 @@ class _WaitingScreenState extends State<WaitingScreen> {
          bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
          bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
          dismissLoader();
-         Navigator.pop(context);
-         dismissLoader();
-         String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-         launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+         // String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+         String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+         // launchUrl(Uri.parse(url),mode:LaunchMode.externalApplication);
+         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
+             PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
+           Navigator.pop(context);
+         });
+       }else{
+         WaitingResponseModel  model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
+         if((model.data?.code??'')=='reject_user'){
+           if(timer!=null){timer!.cancel();}
+           dismissLoader();
+           Navigator.pop(context);
+           ElegantNotification.error(title: Text(''),description: Text((model.msg??''))).show(context);
+         }
        }
       print("herrrrrrrr"+'2');
       }
     }
   }
+
 }

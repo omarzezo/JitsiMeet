@@ -4,7 +4,7 @@ import 'p_image.dart';
 import 'p_text.dart';
 
 
-AppBar appBar({String? text, bool isCenter = false,bool backBtn = true,required BuildContext context,List<Widget>? actions,
+AppBar appBar({Function()? onBack,String? text, bool isCenter = false,bool backBtn = true,required BuildContext context,List<Widget>? actions,
   refreshCheck=true,double? elevation,Widget? titleWidget}){
   return AppBar(
       iconTheme: IconThemeData(color: Colors.black),
@@ -20,7 +20,11 @@ AppBar appBar({String? text, bool isCenter = false,bool backBtn = true,required 
     ],
   ),
       ),
-      leading: backBtn ? IconButton(onPressed: ()=> Navigator.pop(context,refreshCheck),
+      leading: backBtn ? IconButton(onPressed: (){
+        if(onBack!=null){
+          onBack();
+        }else{Navigator.pop(context,refreshCheck);}
+      },
           icon: const Icon(Icons.arrow_back_ios,color: Constants.yellow)) : null,
   actions: actions);
 
