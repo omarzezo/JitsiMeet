@@ -5,6 +5,7 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
+import 'package:test_video_conference/screens/home_screen.dart';
 
 showLoader({bool canInteract = true}){
   EasyLoading.instance.userInteractions = canInteract;
@@ -40,4 +41,13 @@ Future<void> handleCallbackMsg(Response response,BuildContext context)async {
     // });
     ElegantNotification.error(title: Text(''),description: Text(msg)).show(context);
   }
+}
+
+finish(BuildContext context){
+  Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(
+          builder: (context) => HomeScreen()
+      ),
+      ModalRoute.withName("/Home")
+  );
 }

@@ -4,22 +4,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/constants.dart';
-import 'package:test_video_conference/screens/web_v_2.dart';
 import 'package:test_video_conference/widgets/p_appbar.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
 import 'package:test_video_conference/widgets/p_text.dart';
 
-class PublicWebViewScreen extends StatefulWidget {
+class PublicWebView2Screen extends StatefulWidget {
   final String url ;
   final String name ;
-  const PublicWebViewScreen({required this.url,required this.name});
+  const PublicWebView2Screen({required this.url,required this.name});
 
 
   @override
-  State<PublicWebViewScreen> createState() => PublicWebViewScreenState();
+  State<PublicWebView2Screen> createState() => PublicWebView2ScreenState();
 }
 
-class PublicWebViewScreenState extends State<PublicWebViewScreen> {
+class PublicWebView2ScreenState extends State<PublicWebView2Screen> {
   var loadingPercentage = 0;
   InAppWebViewController? webView;
 
@@ -30,28 +29,8 @@ class PublicWebViewScreenState extends State<PublicWebViewScreen> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
-  Future callAgain() async {
-    String n=widget.name??'';
-    String u=widget.url??'';
-    Future.delayed(const Duration(seconds:7), () {
-      if(webView!=null){
-        try{webView!.stopLoading();}catch(e){}}
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>
-          PublicWebView2Screen(url:u, name:n)));
-    });
-  }
-  // Future callPermission() async {
-  //   await Permission.camera.request();
-  //   await Permission.microphone.request();
-  //   await Permission.audio.request();
-  //   showLoader();
-  // }
-BuildContext? parentCOntext;
+  BuildContext? parentCOntext;
   @override
   Widget build(BuildContext context) {
     parentCOntext=context;
@@ -59,10 +38,9 @@ BuildContext? parentCOntext;
       onWillPop:_onBackPressed,
       child: Scaffold(
           appBar:appBar(context: context,text:"Hello ${widget.name}",isCenter:true,onBack:() {
-            if(webView!=null){
-              try{webView!.stopLoading();}catch(e){}}
-            finish(parentCOntext!);
-
+           if(webView!=null){
+             try{webView!.stopLoading();}catch(e){}}
+              finish(parentCOntext!);
             // Navigator.pop(context);
             // Navigator.pop(context);
             // Navigator.pop(context);
@@ -70,26 +48,25 @@ BuildContext? parentCOntext;
           body: InAppWebView(
             onWebViewCreated: (controller) {
               webView = controller;
-              callAgain();
             }, onLoadStop: ( controller,  url) {
             // dismissLoader();
           },initialOptions: InAppWebViewGroupOptions(
-              crossPlatform: InAppWebViewOptions(
-                mediaPlaybackRequiresUserGesture: false,
-                javaScriptCanOpenWindowsAutomatically:true,
-                useShouldOverrideUrlLoading: true,
-                javaScriptEnabled: true,
-              ),
-              android: AndroidInAppWebViewOptions(
-                useHybridComposition: true,
-                allowContentAccess: true,
-                allowFileAccess: true,
-                // hardwareAcceleration: true
-              ),
-              ios: IOSInAppWebViewOptions(
-                allowsInlineMediaPlayback: true,
-              ),
+            crossPlatform: InAppWebViewOptions(
+              mediaPlaybackRequiresUserGesture: false,
+              javaScriptCanOpenWindowsAutomatically:true,
+              useShouldOverrideUrlLoading: true,
+              javaScriptEnabled: true,
             ),
+            android: AndroidInAppWebViewOptions(
+              useHybridComposition: true,
+              allowContentAccess: true,
+              allowFileAccess: true,
+              // hardwareAcceleration: true
+            ),
+            ios: IOSInAppWebViewOptions(
+              allowsInlineMediaPlayback: true,
+            ),
+          ),
             initialUrlRequest: URLRequest(
                 url: Uri.parse(widget.url)
             ),
@@ -106,8 +83,8 @@ BuildContext? parentCOntext;
                 finish(parentCOntext!);
               }
             });
-            },onLoadStart:(controller, url) {
-            },gestureRecognizers: Set()
+          },onLoadStart:(controller, url) {
+          },gestureRecognizers: Set()
             ..add(Factory<DragGestureRecognizer>(() => VerticalDragGestureRecognizer()),
             ),
           )
@@ -148,50 +125,3 @@ BuildContext? parentCOntext;
 }
 
 
-// import 'package:flutter/material.dart';
-// import 'package:test_video_conference/widgets/p_appbar.dart';
-// import 'package:webview_flutter/webview_flutter.dart';
-//
-//
-// class WebViewScreen extends StatefulWidget {
-//   final String url;
-//   WebViewScreen(this.url);
-//   @override
-//   _WebViewScreenState createState() => _WebViewScreenState();
-// }
-//
-// class _WebViewScreenState extends State<WebViewScreen> {
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(resizeToAvoidBottomInset: true,
-//       appBar:appBar(context: context,text:'Join a Meeting',isCenter:true),
-//       body:WebViewWidget(controller: WebViewController()
-//         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-//         ..setBackgroundColor(const Color(0x00000000))
-//         ..setNavigationDelegate(
-//           NavigationDelegate(
-//             onProgress: (int progress) {
-//               // Update loading bar.
-//             },
-//             onPageStarted: (String url) {},
-//             onPageFinished: (String url) {},
-//             onWebResourceError: (WebResourceError error) {},
-//             onNavigationRequest: (NavigationRequest request) {
-//               // if (request.url.startsWith('https://www.youtube.com/')) {
-//               //   return NavigationDecision.prevent;
-//               // }
-//               return NavigationDecision.navigate;
-//             },
-//           ),
-//         )
-//         ..loadRequest(Uri.parse(widget.url))),
-//     );
-//   }
-// }

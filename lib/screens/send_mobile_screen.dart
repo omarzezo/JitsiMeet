@@ -23,7 +23,7 @@ class SendMobileScreen extends StatefulWidget {
 
 class _SendMobileScreenState extends State<SendMobileScreen> {
   // String? mobileNumber='71131936';
-  String? mobileNumber;
+  String? mobileNumber='71131936';
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
@@ -38,8 +38,7 @@ class _SendMobileScreenState extends State<SendMobileScreen> {
           child: PText(title:'You will receive a 4 digit code to verify next',fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
         ),
         Center(child: SizedBox(width:MediaQuery.sizeOf(context).width*0.94,
-            // child: PTextField(initialText:mobileNumber,borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Enter mobile number', feedback: (value) {
-            child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Enter mobile number', feedback: (value) {
+            child: PTextField(initialText:mobileNumber,borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Enter mobile number', feedback: (value) {
               mobileNumber=value;
             }, validator: (value){return null;},),
           ),

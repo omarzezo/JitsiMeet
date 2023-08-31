@@ -8,6 +8,7 @@ import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/constants.dart';
 import 'package:test_video_conference/models/waiting_response_model.dart';
 import 'package:test_video_conference/screens/waiting_screen.dart';
+import 'package:test_video_conference/screens/web_view_screen.dart';
 import 'package:test_video_conference/services/jitsi_meet_service.dart';
 import 'package:test_video_conference/widgets/p_appbar.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
@@ -25,17 +26,40 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
   String? name,meetingId;
 
   Future callPermission() async {
-    // await Permission.camera.request();
-    // await Permission.microphone.request();
-    // await Permission.audio.request();
-    await askCameraPermission();
-    await askMicrophonePermission();
+    Map<Permission, PermissionStatus> statuses = await [
+      // Permission.storage,
+      // Permission.audio,
+      Permission.camera,
+      Permission.microphone,
+    ].request();
+    // await askStoragePermission();
     // await askAudioPermission();
+    // await askCameraPermission();
+    // await askMicrophonePermission();
+    // await askSpeechPermission();
   }
   @override
   void initState() {
     super.initState();
     callPermission();
+  }
+  Future<bool> askStoragePermission() async{
+    PermissionStatus status = await Permission.storage.request();
+    if(status.isDenied == true) {
+      askStoragePermission();
+    } else {
+      return true;
+    }
+    return false;
+  }
+  Future<bool> askSpeechPermission() async{
+    PermissionStatus status = await Permission.speech.request();
+    if(status.isDenied == true) {
+      askSpeechPermission();
+    } else {
+      return true;
+    }
+    return false;
   }
   Future<bool> askAudioPermission() async{
     PermissionStatus status = await Permission.audio.request();
@@ -109,7 +133,13 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
                 String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
                 // String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
                 print("urlurlurl>>"+url);
-                launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+                // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+                // Navigator.pop(context);
+                // Navigator.pop(context);
+                Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
+                    PublicWebViewScreen(url: url, name: name??''))).then((value){
+                  // Navigator.pop(context);
+                });
               }else{
                 // here is the code  400
                 WaitingResponseModel model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));

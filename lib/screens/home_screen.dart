@@ -51,11 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
           const PText(title:'with friends and colleague',fontColor: Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
           SizedBox(width:MediaQuery.sizeOf(context).width*0.90,
             child: Padding(padding: const EdgeInsets.only(top:10),
-              child: PButton(onPressed:() {
-                // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
-                Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
-                // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
-              },title:'Join meeting',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+              child: SizedBox(height:45,
+                child: PButton(onPressed:() {
+                  // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
+                  Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
+                  // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
+                },title:'Join meeting',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+              ),
             ),
           ),
 

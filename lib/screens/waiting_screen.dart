@@ -45,13 +45,13 @@ class _WaitingScreenState extends State<WaitingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
       appBar:appBar(context: context,text:'Join a Meeting',isCenter:true,actions:[
-        PButton(onPressed:() {
-          if(timer!=null){
-            timer?.cancel();
-          }
-          Navigator.pop(context);
-          dismissLoader();
-        },title:'Leave',fillColor:Colors.transparent,textColor:Constants.red,style:PStyle.tertiary,)
+        // PButton(onPressed:() {
+        //   if(timer!=null){
+        //     timer?.cancel();
+        //   }
+        //   Navigator.pop(context);
+        //   dismissLoader();
+        // },title:'Leave',fillColor:Colors.transparent,textColor:Constants.red,style:PStyle.tertiary,)
       ],),
       body:Center(
         child: Padding(
@@ -101,9 +101,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
         // String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name??''}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
         print("urlurlurl>>"+url);
         // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        Navigator.pop(context);
         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
             PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
         });
       }else{
         // here is the code  400
@@ -119,6 +122,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
       WaitingResponseModel  model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res!.bodyBytes)));
        isHost=((model.data?.code??'')=='host_waiting');
        participantId=model.data?.participantId??'';
+       if(participantId.isEmpty){
+         res=await JitsiMeetService().joinMeeting(context:context,name:widget.name??'', meetignId:widget.meetingId??'',
+             mobile:CacheHelper.getData(key:'mobile')??'', otp: CacheHelper.getData(key:'pin')??'');
+       }
        Response response=await JitsiMeetService().getStatusParticipant(participantId: participantId);
        if(response.statusCode==200||response.statusCode==201){
          if(timer!=null){timer!.cancel();}
@@ -136,9 +143,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
          String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
          // String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
          // launchUrl(Uri.parse(url),mode:LaunchMode.externalApplication);
+         Navigator.pop(context);
          Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
              PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
-           Navigator.pop(context);
+           // Navigator.pop(context);
+           // Navigator.pop(context);
+           // Navigator.pop(context);
          });
        }else{
          WaitingResponseModel  model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
