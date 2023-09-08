@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -23,22 +24,23 @@ class SendMobileScreen extends StatefulWidget {
 
 class _SendMobileScreenState extends State<SendMobileScreen> {
   // String? mobileNumber='71131936';
-  String? mobileNumber='71131936';
+  String? mobileNumber='';
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
-      appBar:appBar(context: context,text:'Join a Meeting',isCenter:true),
+      appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
-        const Padding(padding: EdgeInsets.only(top:40,bottom:4),
-          child: PText(title:'Enter your', size: PSize.large,fontWeight:FontWeight.w700,),
+         Padding(padding: const EdgeInsets.only(top:40,bottom:4),
+          child: PText(title:'enter_mobile_number'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
         ),
-        const PText(title:'mobile number', size: PSize.large,fontWeight:FontWeight.w700,),
-        const Padding(
-          padding: EdgeInsets.only(top:10,bottom:10),
-          child: PText(title:'You will receive a 4 digit code to verify next',fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
+         // PText(title:'mobile_number'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
+         Padding(
+          padding: const EdgeInsets.only(top:10,bottom:10),
+          child: PText(title:'receive_for_number'.tr(),fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
         ),
         Center(child: SizedBox(width:MediaQuery.sizeOf(context).width*0.94,
-            child: PTextField(initialText:mobileNumber,borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Enter mobile number', feedback: (value) {
+            // child: PTextField(initialText:mobileNumber,borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Enter mobile number', feedback: (value) {
+            child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'mobile_number'.tr(), feedback: (value) {
               mobileNumber=value;
             }, validator: (value){return null;},),
           ),
@@ -47,7 +49,8 @@ class _SendMobileScreenState extends State<SendMobileScreen> {
             child: PButton(onPressed:() async {
               if(mobileNumber!=null&&mobileNumber!.isNotEmpty){
                 await CacheHelper.saveData(key: 'mobile',value:mobileNumber);
-                Response res= await JitsiMeetService().sendMobileNumber(mobile:mobileNumber??'');
+                Response res= await JitsiMeetService().sendMobileNumber(mobile:mobileNumber??'',
+                lang: context.locale.languageCode);
                 if(res.statusCode==200||res.statusCode==201){
                   ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
                   handleCallbackMsg(res,context);
@@ -58,7 +61,7 @@ class _SendMobileScreenState extends State<SendMobileScreen> {
               }else{
                 ElegantNotification.error(title: Text(''),description: Text('Please Enter Mobile Number')).show(context);
               }
-            },title:'Send OTP',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+            },title:'send_otp'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
           ),
         )
       ]),

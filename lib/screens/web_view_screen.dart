@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/foundation.dart';
@@ -58,7 +59,7 @@ BuildContext? parentCOntext;
     return WillPopScope(
       onWillPop:_onBackPressed,
       child: Scaffold(
-          appBar:appBar(context: context,text:"Hello ${widget.name}",isCenter:true,onBack:() {
+          appBar:appBar(context: context,text:"${'hello'.tr()} ${widget.name}",isCenter:true,onBack:() {
             if(webView!=null){
               try{webView!.stopLoading();}catch(e){}}
             finish(parentCOntext!);
@@ -70,7 +71,7 @@ BuildContext? parentCOntext;
           body: InAppWebView(
             onWebViewCreated: (controller) {
               webView = controller;
-              callAgain();
+              // callAgain();
             }, onLoadStop: ( controller,  url) {
             // dismissLoader();
           },initialOptions: InAppWebViewGroupOptions(
@@ -99,7 +100,7 @@ BuildContext? parentCOntext;
             return getPermission(resources);
           },onProgressChanged: ( controller,  progress){
             controller.getOriginalUrl().then((value){
-              print("testtt>>"+(value?.path??''));
+              // print("testtt>>"+(value?.path??''));
               if((value?.path??'').toString()=='/'){
                 if(webView!=null){
                   try{webView!.stopLoading();}catch(e){}}

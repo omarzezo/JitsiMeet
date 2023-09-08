@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -30,14 +31,14 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(resizeToAvoidBottomInset: true,
       appBar:appBar(context: context,text:'OTP',isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
-        const Padding(padding: EdgeInsets.only(top:40,bottom:4),
-          child: PText(title:'We sent you a code to', size: PSize.large,fontWeight:FontWeight.w700,),
+         Padding(padding: const EdgeInsets.only(top:40,bottom:4),
+          child: PText(title:'send_code'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
         ),
-        const PText(title:'verify your mobile', size: PSize.large,fontWeight:FontWeight.w700,),
-        const PText(title:'number', size: PSize.large,fontWeight:FontWeight.w700,),
-        const Padding(
-          padding: EdgeInsets.only(top:10,bottom:10),
-          child: PText(title:'Enter your OTP code here',fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
+        PText(title:'send_code_2'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
+        PText(title:'send_code_3'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
+        Padding(
+          padding: const EdgeInsets.only(top:10,bottom:10),
+          child: PText(title:'send_code_here'.tr(),fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
         ),
         Center(child: Padding(padding: const EdgeInsets.only(top:20),
           child: SizedBox(width:MediaQuery.sizeOf(context).width*0.70,
@@ -45,7 +46,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 pin=value??'';
                 if(pin!.length==4){
                   await CacheHelper.saveData(key: 'pin',value:pin??'');
-                  Response res= await JitsiMeetService().sendOTP(mobile:CacheHelper.getData(key:'mobile')??'',otp:pin??'');
+                  Response res= await JitsiMeetService().sendOTP(mobile:CacheHelper.getData(key:'mobile')??'',otp:pin??'',
+                      lang:context.locale.languageCode);
                   if(res.statusCode==200||res.statusCode==201){
                     ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
                     if(model.success!=null&&model.success!){
@@ -61,15 +63,16 @@ class _OtpScreenState extends State<OtpScreen> {
             ),
         ),
         ),
-        const Padding(padding: EdgeInsets.only(top:10,bottom:10),
-          child: PText(title:'I did\'t received a code!',fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
+        Padding(padding: const EdgeInsets.only(top:10,bottom:10),
+          child: PText(title:'not_received'.tr(),fontColor:Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
         ),
         RichText(text: TextSpan(
             children: <TextSpan>[
               TextSpan(
-                  text: 'Resend Code',style:const TextStyle(color:Constants.yellow),
+                  text: 'resend_code'.tr(),style:const TextStyle(color:Constants.yellow),
                   recognizer: TapGestureRecognizer()..onTap = () async {
-                    Response res= await JitsiMeetService().sendMobileNumber(mobile:CacheHelper.getData(key: 'mobile'));
+                    Response res= await JitsiMeetService().sendMobileNumber(mobile:CacheHelper.getData(key: 'mobile'),
+                    lang:context.locale.languageCode);
                     if(res.statusCode==200||res.statusCode==201){
                       // ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
                       handleCallbackMsg(res,context);

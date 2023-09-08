@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -44,7 +45,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
-      appBar:appBar(context: context,text:'Join a Meeting',isCenter:true,actions:[
+      appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true,actions:[
         // PButton(onPressed:() {
         //   if(timer!=null){
         //     timer?.cancel();
@@ -57,8 +58,8 @@ class _WaitingScreenState extends State<WaitingScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal:16),
           child: Column(mainAxisAlignment:MainAxisAlignment.center,crossAxisAlignment:CrossAxisAlignment.center,children: [
-            const Padding(padding: EdgeInsets.only(top:40,bottom:4),
-              child: PText(title:'Please Wait, the meeting host will let you in soon.', size: PSize.large,fontWeight:
+             Padding(padding: const EdgeInsets.only(top:40,bottom:4),
+              child: PText(title:'please_wait'.tr(), size: PSize.large,fontWeight:
               FontWeight.w400,),
             ),
              Padding(
@@ -126,7 +127,8 @@ class _WaitingScreenState extends State<WaitingScreen> {
          res=await JitsiMeetService().joinMeeting(context:context,name:widget.name??'', meetignId:widget.meetingId??'',
              mobile:CacheHelper.getData(key:'mobile')??'', otp: CacheHelper.getData(key:'pin')??'');
        }
-       Response response=await JitsiMeetService().getStatusParticipant(participantId: participantId);
+       Response response=await JitsiMeetService().getStatusParticipant(participantId: participantId,
+           lang:context.locale.languageCode);
        if(response.statusCode==200||response.statusCode==201){
          if(timer!=null){timer!.cancel();}
          final data = jsonDecode(response.body);

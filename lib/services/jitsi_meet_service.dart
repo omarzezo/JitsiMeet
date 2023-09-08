@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 // import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
@@ -12,21 +13,21 @@ class JitsiMeetService {
   // final baseURL ='https://interrog.opp.gov.om/api';
   final baseURL ='https://opp.ijmeet.com/api';
 
-  Future<http.Response> sendMobileNumber({required String mobile}) async {
+  Future<http.Response> sendMobileNumber({required String mobile,required String lang}) async {
     showLoader();
     print("urlIs>>"+"${baseURL}/send-otp/$mobile");
     var response = await http.get(Uri.parse("${baseURL}/send-otp/$mobile"),
-        headers: {'Content-Type': 'application/json','Accept': 'application/json',});
+        headers: {'Content-Type': 'application/json','Accept': 'application/json','lang':lang});
     print("responseIS>>"+response.body);
     dismissLoader();
     return response;
   }
 
-  Future<http.Response> sendOTP({required String mobile,required String otp}) async {
+  Future<http.Response> sendOTP({required String mobile,required String otp,required String lang}) async {
     showLoader();
     print("urlIs>>"+"${baseURL}/verify-otp/$mobile/$otp");
     var response = await http.get(Uri.parse("${baseURL}/verify-otp/$mobile/$otp"),
-        headers: {'Content-Type': 'application/json','Accept': 'application/json',});
+        headers: {'Content-Type': 'application/json','Accept': 'application/json','lang':lang});
     print(response.body);
     dismissLoader();
     return response;
@@ -35,7 +36,7 @@ class JitsiMeetService {
   Future<http.Response> joinMeeting({required BuildContext context,required String name,required String meetignId,
     required String mobile,required String otp}) async {
     showLoader();
-      final queryParameters = {'name':name,'phone':mobile, 'otp':otp};
+      final queryParameters = {'name':name,'phone':mobile, 'otp':otp,'lang':context.locale.languageCode};
       // final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
       final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
       var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
@@ -140,11 +141,11 @@ class JitsiMeetService {
       return response;
   }
 
-  Future<http.Response> getStatusParticipant({required String participantId}) async {
+  Future<http.Response> getStatusParticipant({required String participantId,required String lang}) async {
     showLoader();
     print("urlIs>>"+"${baseURL}/get_status/$participantId");
     var response = await http.get(Uri.parse("${baseURL}/get_status/$participantId"),
-        headers: {'Content-Type': 'application/json','Accept': 'application/json',});
+        headers: {'Content-Type': 'application/json','Accept': 'application/json','lang':lang});
     print("responseIS>>"+response.body);
     dismissLoader();
     return response;

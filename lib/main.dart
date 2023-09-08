@@ -1,15 +1,19 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get_it/get_it.dart';
 // import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
 // import 'package:jitsi_meeting_plus/jitsi_meet_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_video_conference/cache_helper.dart';
 import 'package:test_video_conference/constants.dart';
+import 'package:test_video_conference/injections.dart';
 import 'package:test_video_conference/screens/home_screen.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
 
@@ -22,10 +26,19 @@ class MyHttpOverrides extends HttpOverrides{
 }
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
+
   configLoading();
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
-  runApp(MyApp());
+  await EasyLocalization.ensureInitialized();
+  Injections().setupDependencyInjection();
+  GetIt.I.isReady<SharedPreferences>().then((_) {
+    runApp(EasyLocalization(supportedLocales: const [Locale('ar'), Locale('en')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child:  MyApp(),));
+  });
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -73,6 +86,11 @@ class _MeetingState extends State<Meeting> {
     return MaterialApp(
       home:HomeScreen(),
       builder:EasyLoading.init(),
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      debugShowCheckedModeBanner: false,
+      title: 'IJmeet',
     );
   }
 

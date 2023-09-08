@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/foundation.dart';
@@ -37,7 +38,7 @@ class PublicWebView2ScreenState extends State<PublicWebView2Screen> {
     return WillPopScope(
       onWillPop:_onBackPressed,
       child: Scaffold(
-          appBar:appBar(context: context,text:"Hello ${widget.name}",isCenter:true,onBack:() {
+          appBar:appBar(context: context,text:"${'hello'.tr()} ${widget.name}",isCenter:true,onBack:() {
            if(webView!=null){
              try{webView!.stopLoading();}catch(e){}}
               finish(parentCOntext!);
@@ -104,7 +105,7 @@ class PublicWebView2ScreenState extends State<PublicWebView2Screen> {
         return WillPopScope(
           onWillPop: () async => false,
           child: AlertDialog(
-            title:const PText(title:'Do You Want to Exit From Meeting ?',size:PSize.large,fontWeight:FontWeight.w600),
+            title:PText(title:'do_you_want'.tr(),size:PSize.large,fontWeight:FontWeight.w600),
             actions: <Widget>[
               PButton(onPressed:() {
                 if(webView!=null){
@@ -112,10 +113,10 @@ class PublicWebView2ScreenState extends State<PublicWebView2Screen> {
                 Navigator.pop(context);
                 finish(parentCOntext!);
                 // Navigator.pop(context);Navigator.pop(context);
-              },title:'Yes',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+              },title:'yes'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
               PButton(onPressed:() {
                 Navigator.pop(context);
-              },title:'No',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,)
+              },title:'no'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,)
             ],
           ),
         );

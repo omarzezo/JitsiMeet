@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -91,18 +92,18 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
-      appBar:appBar(context: context,text:'Join a Meeting',isCenter:true),
+      appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
         Center(child: Padding(padding: const EdgeInsets.only(top:40),
           child: SizedBox(width:MediaQuery.sizeOf(context).width*0.94,
-            child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Enter Name', feedback: (value) {
+            child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'enter_name'.tr(), feedback: (value) {
               name=value;
             }, validator: (value){return null;},),
           ),
         ),
         ),
         Center(child: SizedBox(width:MediaQuery.sizeOf(context).width*0.94,
-          child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'Meeting ID', feedback: (value) {
+          child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'meeting_id'.tr(), feedback: (value) {
             meetingId=value;
           }, validator: (value){return null;},),
         ),
@@ -150,7 +151,7 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
                     isHost:isHost)));
               }
             }
-          },title:'Join Meeting',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+          },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
         ),
         )
       ]),

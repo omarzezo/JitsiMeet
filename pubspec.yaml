@@ -47,6 +47,9 @@ dependencies:
   permission_handler: ^10.4.3
   url_launcher: ^6.1.12
   flutter_inappwebview: any
+  get_it: ^7.2.0
+  easy_localization: ^3.0.1
+  dropdown_button2: ^2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,6 +73,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/img/
+    - assets/translations/
 #    - assets/html/
   # To add assets to your application, add an assets section, like this:
   # assets:

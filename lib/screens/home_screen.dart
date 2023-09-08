@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
@@ -24,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor:Constants.white,resizeToAvoidBottomInset: true,
-      appBar:appBar(context: context,text:'Home',isCenter:true,backBtn:false),
+      appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true,backBtn:false,actions:[
+        _languageWidget()
+      ]),
       body: Column(mainAxisSize:MainAxisSize.max,
         children: [
           // PImage(width:MediaQuery.sizeOf(context).width,height:200,"banner_1"),
@@ -39,16 +43,16 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Image.asset('assets/img/banner_2.png',
               width:MediaQuery.sizeOf(context).width*0.84,fit:BoxFit.contain,),
           )),
-          const Padding(padding: EdgeInsets.only(top:14),
-            child: PText(title:'Easy & quick join', size: PSize.large,fontWeight:FontWeight.w700,),
+           Padding(padding: const EdgeInsets.only(top:14),
+            child: PText(title:'intro_first_title'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
           ),
-          const PText(title:'Meeting', size: PSize.large,fontWeight:FontWeight.w700,),
-          const Padding(
-            padding: EdgeInsets.only(top:10,bottom:2),
-            child: PText(title:'Ijmeet lets you make video calls, voice calls',fontColor:
+          // const PText(title:'Meeting', size: PSize.large,fontWeight:FontWeight.w700,),
+           Padding(
+            padding:const EdgeInsets.only(top:10,bottom:2),
+            child: PText(title:'intro_first'.tr(),fontColor:
             Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
           ),
-          const PText(title:'with friends and colleague',fontColor: Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
+          PText(title:'intro_first_2'.tr(),fontColor: Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
           SizedBox(width:MediaQuery.sizeOf(context).width*0.90,
             child: Padding(padding: const EdgeInsets.only(top:10),
               child: SizedBox(height:45,
@@ -56,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
                   Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
                   // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
-                },title:'Join meeting',fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+                },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
               ),
             ),
           ),
@@ -73,6 +77,41 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _languageWidget(){
+    return Center(
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2<String>(
+          items: [
+
+            DropdownMenuItem<String>(
+              value: 'ar',
+              child: PText(title: 'العربيه', size: PSize.medium),
+            ),
+            DropdownMenuItem<String>(
+              value: 'en',
+              child: PText(title: 'English', size: PSize.medium),
+            ),
+          ],
+          value: null,
+          onChanged: (value) {
+            if(value == 'en')context.setLocale(Locale('en'));
+            else context.setLocale(Locale('ar'));
+          },
+          // customButton:  PImage("language",height: 22,width: 22,fit: BoxFit.contain,),
+          customButton:Padding(padding: const EdgeInsets.symmetric(horizontal:14),
+            child: Icon(Icons.language),
+          ),
+          dropdownStyleData: DropdownStyleData(maxHeight: 200, width: 100,
+              padding: null,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.white,),
+              elevation: 8,
+              offset: const Offset(-50, 10)),
+          menuItemStyleData:  MenuItemStyleData(height: 30),
+        ),
       ),
     );
   }

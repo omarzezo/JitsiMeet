@@ -1,0 +1,23 @@
+{
+  "join_meeting": "Join meeting",
+  "hello": "Hello",
+  "intro_first_title": "Easy &amp; quick join \n meeting",
+  "intro_first": "Ijmeet lets you make video calls, voice calls",
+  "intro_first_2": "with friends and colleague",
+  "mobile_number": "Mobile Number",
+  "enter_mobile_number": "Enter mobile number",
+  "receive_for_number": "You'll receive a 4 digit code to verify next",
+  "send_otp": "Send OTP",
+  "send_code": "We sent you a code to",
+  "send_code_2": "verify your mobile",
+  "send_code_3": "number",
+  "send_code_here": "Enter your OTP code here",
+  "not_received": "I didn't received a code!",
+  "resend_code": "Resend code",
+  "enter_name": "Enter name",
+  "meeting_id": "Meeting ID",
+  "please_wait": "Please wait, the meeting host will let you in soon.",
+  "do_you_want": "Do You Want to Exit From Meeting ?",
+  "yes": "Yes",
+  "no": "No"
+}
