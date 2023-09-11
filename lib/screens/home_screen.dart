@@ -29,54 +29,63 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true,backBtn:false,actions:[
         _languageWidget()
       ]),
-      body: Column(mainAxisSize:MainAxisSize.max,
-        children: [
-          // PImage(width:MediaQuery.sizeOf(context).width,height:200,"banner_1"),
-          Align(alignment:Alignment.topCenter,child: Padding(padding: const EdgeInsets.only(top:14,bottom:10),
-            child: Image.asset('assets/img/new_app_logo.png',
-              width:MediaQuery.sizeOf(context).width*0.50,fit:BoxFit.contain,),
-          )),
-          Image.asset('assets/img/banner_1.png',
-            width:MediaQuery.sizeOf(context).width,fit:BoxFit.contain,),
+      body: SingleChildScrollView(
+        child: Column(mainAxisSize:MainAxisSize.max,
+          children: [
+            // PImage(width:MediaQuery.sizeOf(context).width,height:200,"banner_1"),
+            Align(alignment:Alignment.topCenter,child: Padding(padding: const EdgeInsets.only(top:14,bottom:10),
+              child: Image.asset('assets/img/new_app_logo.png',
+                width:MediaQuery.sizeOf(context).width*0.50,fit:BoxFit.contain,),
+            )),
+            Image.asset('assets/img/banner_1.png',
+              width:MediaQuery.sizeOf(context).width,fit:BoxFit.contain,),
 
-          Align(alignment:Alignment.center,child: Padding(padding: const EdgeInsets.only(top:14,bottom:10),
-            child: Image.asset('assets/img/banner_2.png',
-              width:MediaQuery.sizeOf(context).width*0.84,fit:BoxFit.contain,),
-          )),
-           Padding(padding: const EdgeInsets.only(top:14),
-            child: PText(title:'intro_first_title'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
-          ),
-          // const PText(title:'Meeting', size: PSize.large,fontWeight:FontWeight.w700,),
-           Padding(
-            padding:const EdgeInsets.only(top:10,bottom:2),
-            child: PText(title:'intro_first'.tr(),fontColor:
-            Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
-          ),
-          PText(title:'intro_first_2'.tr(),fontColor: Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
-          SizedBox(width:MediaQuery.sizeOf(context).width*0.90,
-            child: Padding(padding: const EdgeInsets.only(top:10),
-              child: SizedBox(height:45,
-                child: PButton(onPressed:() {
-                  // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
-                  Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
-                  // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
-                },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+            Align(alignment:Alignment.center,child: Padding(padding: const EdgeInsets.only(top:14,bottom:10),
+              child: Image.asset('assets/img/banner_2.png',
+                width:MediaQuery.sizeOf(context).width*0.84,fit:BoxFit.contain,),
+            )),
+             Padding(padding: const EdgeInsets.only(top:14),
+              child: PText(title:'intro_first_title'.tr(), size: PSize.large,fontWeight:FontWeight.w700,),
+            ),
+            // const PText(title:'Meeting', size: PSize.large,fontWeight:FontWeight.w700,),
+             Padding(
+              padding:const EdgeInsets.only(top:10,bottom:2),
+              child: PText(title:'intro_first'.tr(),fontColor:
+              Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
+            ),
+            PText(title:'intro_first_2'.tr(),fontColor: Constants.grey,size:PSize.small,fontWeight:FontWeight.w300,),
+            SizedBox(width:MediaQuery.sizeOf(context).width*0.90,
+              child: Padding(padding: const EdgeInsets.only(top:10),
+                child: SizedBox(height:45,
+                  child: PButton(onPressed:() {
+                    // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
+                    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
+                    // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
+                  },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
+                ),
               ),
             ),
-          ),
-
-          Expanded(
-            child: Align(alignment:Alignment.bottomCenter,child: Padding(padding: const EdgeInsets.only(top:14),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Padding(padding: EdgeInsets.only(top:14),
-                    child: PText(title: 'Powered by', size: PSize.small,),
-                  ),const SizedBox(width: 10,),
-                  Image.asset('assets/img/app_icon.png',fit:BoxFit.contain),
-                ],
-              ),
-            )),
-          ),
-        ],
+            const SizedBox(height:120,),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Padding(padding: EdgeInsets.only(top:14),
+                child: PText(title: 'Powered by', size: PSize.small,),
+              ),const SizedBox(width: 10,),
+              Image.asset('assets/img/app_icon.png',fit:BoxFit.contain),
+            ],
+            ),
+            // Expanded(
+            //   child: Align(alignment:Alignment.bottomCenter,child: Padding(padding: const EdgeInsets.only(top:14),
+            //     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            //         const Padding(padding: EdgeInsets.only(top:14),
+            //           child: PText(title: 'Powered by', size: PSize.small,),
+            //         ),const SizedBox(width: 10,),
+            //         Image.asset('assets/img/app_icon.png',fit:BoxFit.contain),
+            //       ],
+            //     ),
+            //   )),
+            // ),
+          ],
+        ),
       ),
     );
   }
