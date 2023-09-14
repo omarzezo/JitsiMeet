@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -137,10 +138,14 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
                 // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
                 // Navigator.pop(context);
                 // Navigator.pop(context);
+                if(Platform.isAndroid){
                 Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
                     PublicWebViewScreen(url: url, name: name??''))).then((value){
                   // Navigator.pop(context);
                 });
+                }else{
+                  launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+                }
               }else{
                 // here is the code  400
                 WaitingResponseModel model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));

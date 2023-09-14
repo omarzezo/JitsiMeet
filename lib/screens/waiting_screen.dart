@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:elegant_notification/elegant_notification.dart';
@@ -103,12 +104,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
         print("urlurlurl>>"+url);
         // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
         Navigator.pop(context);
+        if(Platform.isAndroid){
         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
             PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
           // Navigator.pop(context);
           // Navigator.pop(context);
           // Navigator.pop(context);
-        });
+        });}else{
+          launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        }
       }else{
         // here is the code  400
         if(res!=null){
@@ -146,12 +150,16 @@ class _WaitingScreenState extends State<WaitingScreen> {
          // String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
          // launchUrl(Uri.parse(url),mode:LaunchMode.externalApplication);
          Navigator.pop(context);
-         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
-             PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
-           // Navigator.pop(context);
-           // Navigator.pop(context);
-           // Navigator.pop(context);
-         });
+         if(Platform.isAndroid){
+           Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
+               PublicWebViewScreen(url: url, name: widget.name??''))).then((value){
+             // Navigator.pop(context);
+             // Navigator.pop(context);
+             // Navigator.pop(context);
+           });
+         }else{
+           launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+         }
        }else{
          WaitingResponseModel  model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
          if((model.data?.code??'')=='reject_user'){
