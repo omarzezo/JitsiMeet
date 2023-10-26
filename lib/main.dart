@@ -16,6 +16,7 @@ import 'package:test_video_conference/constants.dart';
 import 'package:test_video_conference/injections.dart';
 import 'package:test_video_conference/screens/home_screen.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
+// import 'package:uqudosdk_flutter/UqudoIdPlugin.dart';
 
 class MyHttpOverrides extends HttpOverrides{
   @override
@@ -26,10 +27,11 @@ class MyHttpOverrides extends HttpOverrides{
 }
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
-
   configLoading();
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
+  // UqudoIdPlugin.init();
+  // UqudoIdPlugin.setLocale('en');
   await EasyLocalization.ensureInitialized();
   Injections().setupDependencyInjection();
   GetIt.I.isReady<SharedPreferences>().then((_) {
@@ -90,7 +92,7 @@ class _MeetingState extends State<Meeting> {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       debugShowCheckedModeBanner: false,
-      title: 'IJmeet',
+      title: 'برهان',
     );
   }
 

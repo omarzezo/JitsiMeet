@@ -15,6 +15,8 @@ import 'package:test_video_conference/widgets/p_button.dart';
 import 'package:test_video_conference/widgets/p_image.dart';
 import 'package:test_video_conference/widgets/p_text.dart';
 import 'package:test_video_conference/widgets/p_textfield.dart';
+// import 'package:uqudosdk_flutter/UqudoIdPlugin.dart';
+// import 'package:uqudosdk_flutter/uqudosdk_flutter.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -58,9 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Padding(padding: const EdgeInsets.only(top:10),
                 child: SizedBox(height:45,
                   child: PButton(onPressed:() {
-                    // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>JoinMeetingScreen()));
+                    // JitsiMeetService().getFaceToken();
                     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
-                    // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
                   },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
                 ),
               ),
@@ -124,4 +125,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  // checkFace() async {
+  //   String result;
+  //   var token = "5b41841f-0c82-4af9-a9d0-a52ec938bf24";
+  //   try {
+  //     var faceSessionConfiguration = new FaceSessionConfigurationBuilder()
+  //         .setToken(token)
+  //         .setSessionId("lNQp0yy092O615ssrtqYZQl5")
+  //         .setAppearanceMode(AppearanceMode.SYSTEM)
+  //         .build();
+  //     result = await UqudoIdPlugin.faceSession(faceSessionConfiguration);
+  //   } catch (error) {}
+  // }
 }

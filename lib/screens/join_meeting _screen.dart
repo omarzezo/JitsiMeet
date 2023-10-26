@@ -111,51 +111,56 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
         ),
         Center(child: SizedBox(height:44,width:MediaQuery.sizeOf(context).width*0.94,
           child: PButton(onPressed:() async {
-            // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WebViewScreen()));
-            if(name!=null&&meetingId!=null){
-              Response res=await JitsiMeetService().joinMeeting(context:context,name: name??'', meetignId:meetingId??'',
-              // JitsiMeetService().joinMeeting(name: 'Ahmed', meetignId:'c4fc911',
-                  mobile:CacheHelper.getData(key:'mobile')??'', otp: CacheHelper.getData(key:'pin')??'');
-              print('object>'+res.statusCode.toString());
-              if(res.statusCode==200||res.statusCode==201){
-                final data = jsonDecode(res.body);
-                final meeting = data['data']['meeting'];
-                final config = data['data']['config'];
-                final meetingName = meeting['name'];
-                final email = meeting['email'];
-                final meetingId = meeting['m_id'];
-                final conferenceUrl = data['data']['conference_url'];
-                final participantId = meeting['participant_id'];
-                // String? serverUrl = "https://" + conferenceUrl + "/";
-                String? serverUrl = 'https://worlditevents.com/';
-                // String? serverUrl = 'https://ris.opp.gov.om/';
-                bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
-                bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
-                dismissLoader();
-                String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-                // String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-                print("urlurlurl>>"+url);
-                // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
-                // Navigator.pop(context);
-                // Navigator.pop(context);
-                if(Platform.isAndroid){
-                Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
-                    PublicWebViewScreen(url: url, name: name??''))).then((value){
-                  // Navigator.pop(context);
-                });
-                }else{
-                  launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
-                }
-              }else{
-                // here is the code  400
-                WaitingResponseModel model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
-                bool isHost=(model.data?.code??'')=='host_waiting';
-                Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WaitingScreen(
-                    meetingId:meetingId,
-                    name:name??'',
-                    isHost:isHost)));
-              }
-            }
+            Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WaitingScreen(
+                meetingId:meetingId,
+                name:name??'',
+                isHost:true)));
+            // // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WebViewScreen()));
+            // if(name!=null&&meetingId!=null){
+            //   Response res=await JitsiMeetService().joinMeeting(context:context,name: name??'', meetignId:meetingId??'',
+            //   // JitsiMeetService().joinMeeting(name: 'Ahmed', meetignId:'c4fc911',
+            //       mobile:CacheHelper.getData(key:'mobile')??'', otp: CacheHelper.getData(key:'pin')??'');
+            //   print('object>'+res.statusCode.toString());
+            //   if(res.statusCode==200||res.statusCode==201){
+            //     final data = jsonDecode(res.body);
+            //     final meeting = data['data']['meeting'];
+            //     final config = data['data']['config'];
+            //     final meetingName = meeting['name'];
+            //     final email = meeting['email'];
+            //     final meetingId = meeting['m_id'];
+            //     final conferenceUrl = data['data']['conference_url'];
+            //     final participantId = meeting['participant_id'];
+            //     // String? serverUrl = "https://" + conferenceUrl + "/";
+            //     String? serverUrl = 'https://worlditevents.com/';
+            //     // String? serverUrl = 'https://ris.opp.gov.om/';
+            //     bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
+            //     bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
+            //     dismissLoader();
+            //     String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+            //     // String url="https://testinterrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+            //     // String url="https://interrog.opp.gov.om/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+            //     print("urlurlurl>>"+url);
+            //     // launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+            //     // Navigator.pop(context);
+            //     // Navigator.pop(context);
+            //     if(Platform.isAndroid){
+            //     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
+            //         PublicWebViewScreen(url: url, name: name??''))).then((value){
+            //       // Navigator.pop(context);
+            //     });
+            //     }else{
+            //       launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+            //     }
+            //   }else{
+            //     // here is the code  400
+            //     WaitingResponseModel model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
+            //     bool isHost=(model.data?.code??'')=='host_waiting';
+            //     Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WaitingScreen(
+            //         meetingId:meetingId,
+            //         name:name??'',
+            //         isHost:isHost)));
+            //   }
+            // }
           },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
         ),
         )

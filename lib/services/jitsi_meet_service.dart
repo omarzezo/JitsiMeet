@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 // import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
 import 'package:test_video_conference/common_methods.dart';
+import 'package:test_video_conference/models/face_token_response.dart';
+import 'package:test_video_conference/models/user_data_response_model.dart';
+import 'package:test_video_conference/models/waiting_response_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
 class JitsiMeetService {
-  // final baseURL ='https://interrog.opp.gov.om/api';
-  final baseURL ='https://opp.ijmeet.com/api';
+  final baseURL ='https://interrog.opp.gov.om/api';
+  // final baseURL ='https://opp.ijmeet.com/api';
+  // final baseURL ='https://testinterrog.opp.gov.om/api';
 
   Future<http.Response> sendMobileNumber({required String mobile,required String lang}) async {
     showLoader();
@@ -37,108 +41,45 @@ class JitsiMeetService {
     required String mobile,required String otp}) async {
     showLoader();
       final queryParameters = {'name':name,'phone':mobile, 'otp':otp,'lang':context.locale.languageCode};
-      // final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
-      final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
+      final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+      // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
+      // final uri = Uri.https('testinterrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
       var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
-      print("Url>>"+uri.scheme+'://'+uri.host+uri.path.toString());
-      log("respIs>>"+response.body);
-    //   final data = jsonDecode(response.body);
-    //   final meeting = data['data']['meeting'];
-    //   final config = data['data']['config'];
-    //   final meetingName = meeting['name'];
-    //   final email = meeting['email'];
-    //   final meetingId = meeting['m_id'];
-    //   final conferenceUrl = data['data']['conference_url'];
-    //   final participantId = meeting['participant_id'];
-    //   // String? serverUrl = "https://" + conferenceUrl + "/";
-    //   String? serverUrl = 'https://worlditevents.com/';
-    //   // String? serverUrl = 'https://ris.opp.gov.om/';
-    //   // Map valueMap = jsonDecode(config.toString());
-    //   //   print("config>"+jsonEncode(config));
-    //   bool startWithVideoMuted=config['startWithVideoMuted']=='no'?false:true;
-    //   bool startWithAudioMuted=config['startWithAudioMuted']=='no'?false:true;
-    //   // print("conferenceUrl>>"+conferenceUrl.toString());
-    //   // Map<FeatureFlag, Object> featureFlags = {};
-    //   // if (Platform.isAndroid) {
-    //   //   featureFlags[FeatureFlag.isCallIntegrationEnabled] = false;
-    //   // } else if (Platform.isIOS) {
-    //   //   featureFlags[FeatureFlag.isPipEnabled] = false;
-    //   // }
-    // dismissLoader();
-    //   String url="https://opp.ijmeet.com/conf?meeting_id=$meetingId&meeting_name=$meetingName&username=$name&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=$conferenceUrl&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-    //
-    //   print("urlurlurl>>"+url);
-    //   launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
-      // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WebViewScreen(url)));
-      // var options = JitsiMeetingOptions(
-      //   roomNameOrUrl:meetingId,
-      //   serverUrl: serverUrl,
-      //   subject: meetingName,
-      //   token: '',configOverrides:jsonDecode(jsonEncode(config)),
-      //   isAudioMuted: false,
-      //   isAudioOnly: false,
-      //   isVideoMuted: false,
-      //   userDisplayName:name,
-      //   // userEmail: 'Ahmed@ijtimaati.com',
-      //   userEmail: email,
-      //   featureFlags: featureFlags,
-      // );
-      // debugPrint("JitsiMeetingOptions: $options");
+      log("Urlkkkkk>>"+uri.scheme+'://'+uri.host+uri.path.toString());
+      log("datatat>>"+uri.queryParameters.toString());
+      log("respIssss>>"+response.body);
       try{
-        // await JitsiMeetWrapper.joinMeeting(
-        //   options: options,
-        //   listener: JitsiMeetingListener(
-        //     onOpened: () => debugPrint("onOpened"),
-        //     onConferenceWillJoin: (url) {
-        //       debugPrint("onConferenceWillJoin: url: $url");
-        //     },
-        //     onConferenceJoined: (url) {
-        //       debugPrint("onConferenceJoined: url: $url");
-        //     },
-        //     onConferenceTerminated: (url, error) {
-        //       debugPrint("onConferenceTerminated: url: $url, error: $error");
-        //     },
-        //     onAudioMutedChanged: (isMuted) {
-        //       debugPrint("onAudioMutedChanged: isMuted: $isMuted");
-        //     },
-        //     onVideoMutedChanged: (isMuted) {
-        //       debugPrint("onVideoMutedChanged: isMuted: $isMuted");
-        //     },
-        //     onScreenShareToggled: (participantId, isSharing) {
-        //       debugPrint(
-        //         "onScreenShareToggled: participantId: $participantId, "
-        //             "isSharing: $isSharing",
-        //       );
-        //     },
-        //     onParticipantJoined: (email, name, role, participantId) {
-        //       debugPrint(
-        //         "onParticipantJoined: email: $email, name: $name, role: $role, "
-        //             "participantId: $participantId",
-        //       );
-        //     },
-        //     onParticipantLeft: (participantId) {
-        //       debugPrint("onParticipantLeft: participantId: $participantId");
-        //     },
-        //     onParticipantsInfoRetrieved: (participantsInfo, requestId) {
-        //       debugPrint(
-        //         "onParticipantsInfoRetrieved: participantsInfo: $participantsInfo, "
-        //             "requestId: $requestId",
-        //       );
-        //     },
-        //     onChatMessageReceived: (senderId, message, isPrivate) {
-        //       debugPrint(
-        //         "onChatMessageReceived: senderId: $senderId, message: $message, "
-        //             "isPrivate: $isPrivate",
-        //       );
-        //     },
-        //     onChatToggled: (isOpen) => debugPrint("onChatToggled: isOpen: $isOpen"),
-        //     onClosed: () => debugPrint("onClosed"),
-        //   ),
-        // );
       }catch(e){
         print("errrr>>"+e.toString());
       }
       return response;
+  }
+
+
+  Future<WaitingResponseModel> callMDetail({required BuildContext context,required String name,required String meetignId,
+    required String mobile,required String otp}) async {
+    showLoader();
+    final queryParameters = {'name':name,'phone':mobile, 'otp':otp,'lang':context.locale.languageCode};
+    final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+    // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
+    // final uri = Uri.https('testinterrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+    var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
+    log("Urlkkkkk>>"+uri.scheme+'://'+uri.host+uri.path.toString());
+    log("datatat>>"+uri.queryParameters.toString());
+    log("respIssss>>"+response.body);
+    WaitingResponseModel model=   WaitingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
+    return model;
+  }
+
+  Future<UserDataResponseModel> getStatus({required String participantId,required String lang}) async {
+    showLoader();
+    print("urlIs>>"+"${baseURL}/get_status/$participantId");
+    var response = await http.get(Uri.parse("${baseURL}/get_status/$participantId"),
+        headers: {'Content-Type': 'application/json','Accept': 'application/json','lang':lang});
+    print("responseIS>>"+response.body);
+    dismissLoader();
+    UserDataResponseModel model=   UserDataResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
+    return model;
   }
 
   Future<http.Response> getStatusParticipant({required String participantId,required String lang}) async {
@@ -150,4 +91,18 @@ class JitsiMeetService {
     dismissLoader();
     return response;
   }
+
+  // Future<FaceTokenResponse> getFaceToken ()async {
+  //   // var response = await http.post(Uri.parse("https://auth.uqudo.io/api/oauth/token"),
+  //   var response = await http.post(Uri.parse("https://auth.dev.uqudo.io/api/oauth/token?grant_type=client_credentials&client_id=5b41841f-0c82-4af9-a9d0-a52ec938bf24&client_secret=lNQp0yy092O615ssrtqYZQl5"),
+  //   // var response = await http.post(Uri.parse("https://auth.uqudo.io/api/oauth/token?grant_type=client_credentials&client_id=5b41841f-0c82-4af9-a9d0-a52ec938bf24&client_secret=lNQp0yy092O615ssrtqYZQl5"),
+  //       headers: {'Content-Type': 'application/json', 'Accept': 'application/json',
+  //         },body: jsonEncode({'grant_type' :'client_credentials',  'client_id':'5b41841f-0c82-4af9-a9d0-a52ec938bf24',
+  //         'client_secret':'lNQp0yy092O615ssrtqYZQl5'}));
+  //   print("object>>"+response.body);
+  //   FaceTokenResponse model = (jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
+  //   print("object>>"+jsonEncode(model));
+  //   return model;
+  // }
+
 }

@@ -1,4 +1,4 @@
-package com.videoconference.test_video_conference
+package com.gcnt.ijmeet
 
 import io.flutter.embedding.android.FlutterActivity
 
