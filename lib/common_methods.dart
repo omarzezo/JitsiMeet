@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
 import 'package:test_video_conference/screens/home_screen.dart';
 
@@ -43,11 +44,16 @@ Future<void> handleCallbackMsg(Response response,BuildContext context)async {
   }
 }
 
-finish(BuildContext context){
-  Navigator.pushAndRemoveUntil(context,
-      MaterialPageRoute(
-          builder: (context) => HomeScreen()
-      ),
-      ModalRoute.withName("/Home")
-  );
+// finish(BuildContext context){
+//   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()),
+//       // ModalRoute.withName("/Home")
+//       ModalRoute.withName("/")
+//   );
+// }
+
+finish (BuildContext context) {
+  while (context.canPop() == true) {
+    context.pop();
+  }
+  context.pushReplacement('/');
 }

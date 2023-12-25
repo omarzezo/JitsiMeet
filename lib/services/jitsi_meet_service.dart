@@ -7,14 +7,15 @@ import 'package:http/http.dart' as http;
 // import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
 import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/models/face_token_response.dart';
+import 'package:test_video_conference/models/mobile_meeting_response_model.dart';
 import 'package:test_video_conference/models/user_data_response_model.dart';
 import 'package:test_video_conference/models/waiting_response_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
 class JitsiMeetService {
-  final baseURL ='https://interrog.opp.gov.om/api';
-  // final baseURL ='https://opp.ijmeet.com/api';
+  // final baseURL ='https://interrog.opp.gov.om/api';
+  final baseURL ='https://opp.ijmeet.com/api';
   // final baseURL ='https://testinterrog.opp.gov.om/api';
 
   Future<http.Response> sendMobileNumber({required String mobile,required String lang}) async {
@@ -37,31 +38,31 @@ class JitsiMeetService {
     return response;
   }
 
-  Future<http.Response> joinMeeting({required BuildContext context,required String name,required String meetignId,
-    required String mobile,required String otp}) async {
-    showLoader();
-      final queryParameters = {'name':name,'phone':mobile, 'otp':otp,'lang':context.locale.languageCode};
-      final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
-      // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
-      // final uri = Uri.https('testinterrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
-      var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
-      log("Urlkkkkk>>"+uri.scheme+'://'+uri.host+uri.path.toString());
-      log("datatat>>"+uri.queryParameters.toString());
-      log("respIssss>>"+response.body);
-      try{
-      }catch(e){
-        print("errrr>>"+e.toString());
-      }
-      return response;
-  }
+  // Future<http.Response> joinMeeting({required BuildContext context,required String name,required String meetignId,
+  //   required String mobile,required String otp}) async {
+  //   showLoader();
+  //     final queryParameters = {'name':name,'phone':mobile, 'otp':otp,'lang':context.locale.languageCode};
+  //     final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+  //     // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
+  //     // final uri = Uri.https('testinterrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+  //     var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
+  //     log("Urlkkkkk>>"+uri.scheme+'://'+uri.host+uri.path.toString());
+  //     log("datatat>>"+uri.queryParameters.toString());
+  //     log("respIssss>>"+response.body);
+  //     try{
+  //     }catch(e){
+  //       print("errrr>>"+e.toString());
+  //     }
+  //     return response;
+  // }
 
 
   Future<WaitingResponseModel> callMDetail({required BuildContext context,required String name,required String meetignId,
     required String mobile,required String otp}) async {
     showLoader();
     final queryParameters = {'name':name,'phone':mobile, 'otp':otp,'lang':context.locale.languageCode};
-    final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
-    // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
+    // final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
+    final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/${meetignId}', queryParameters);
     // final uri = Uri.https('testinterrog.opp.gov.om', '/api/mdetail/${meetignId}', queryParameters);
     var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
     log("Urlkkkkk>>"+uri.scheme+'://'+uri.host+uri.path.toString());
@@ -104,5 +105,14 @@ class JitsiMeetService {
   //   print("object>>"+jsonEncode(model));
   //   return model;
   // }
-
+  Future<MobileMeetingResponseModel> getMobileNumberById({required String id,required String lang}) async {
+    showLoader();
+    print("urlIs>>"+"${baseURL}/p_meeting/$id");
+    var response = await http.get(Uri.parse("${baseURL}/p_meeting/$id"),
+        headers: {'Content-Type': 'application/json','Accept': 'application/json','lang':lang});
+    log("responseIShh>>"+response.body);
+    dismissLoader();
+    MobileMeetingResponseModel model=   MobileMeetingResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(response.bodyBytes)));
+    return model;
+  }
 }

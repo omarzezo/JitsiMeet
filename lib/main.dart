@@ -1,22 +1,23 @@
-import 'dart:convert';
-import 'dart:developer';
+import 'dart:async';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
-// import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
-// import 'package:jitsi_meeting_plus/jitsi_meet_plus.dart';
-import 'package:http/http.dart' as http;
+import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_video_conference/cache_helper.dart';
 import 'package:test_video_conference/constants.dart';
 import 'package:test_video_conference/injections.dart';
 import 'package:test_video_conference/screens/home_screen.dart';
-import 'package:test_video_conference/widgets/p_button.dart';
-// import 'package:uqudosdk_flutter/UqudoIdPlugin.dart';
+import 'package:test_video_conference/screens/otp_screen.dart';
+import 'package:test_video_conference/screens/send_mobile_screen.dart';
+// import 'package:uni_links/uni_links.dart';
 
 class MyHttpOverrides extends HttpOverrides{
   @override
@@ -25,506 +26,339 @@ class MyHttpOverrides extends HttpOverrides{
       ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
+
+bool _initialUriIsHandled = false;
+
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   configLoading();
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
-  // UqudoIdPlugin.init();
-  // UqudoIdPlugin.setLocale('en');
   await EasyLocalization.ensureInitialized();
+  await Permission.camera.request();
+  await Permission.microphone.request();
   Injections().setupDependencyInjection();
   GetIt.I.isReady<SharedPreferences>().then((_) {
     runApp(EasyLocalization(supportedLocales: const [Locale('ar'), Locale('en')],
-      path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
-      child:  MyApp(),));
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en'),
+        child:MyApp()));
   });
   // runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Meeting());
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
+  Uri? _initialUri;
+  Uri? _latestUri;
+  Object? _err;
+
+  StreamSubscription? _sub;
+
+  final _scaffoldKey = GlobalKey();
+  final _cmds = getCmds();
+  final _cmdStyle = const TextStyle(fontFamily: 'Courier', fontSize: 12.0, fontWeight: FontWeight.w700);
+
+  @override
+  void initState() {
+    super.initState();
+    enableSecureMode();
+    // _handleIncomingLinks();
+    // _handleInitialUri();
   }
-}
-
-class Meeting extends StatefulWidget {
+  Future<void> enableSecureMode() async {
+    await ScreenProtector.protectDataLeakageOn();
+    await ScreenProtector.preventScreenshotOn();
+  }
   @override
-  _MeetingState createState() => _MeetingState();
-}
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
 
-class _MeetingState extends State<Meeting> {
-  final  roomIdController = TextEditingController();
-  final  nameController = TextEditingController();
-  final  phoneController = TextEditingController();
-  final  otpController = TextEditingController();
-  // final roomText = TextEditingController(text: "plugintestroom");
-  // final subjectText = TextEditingController(text: "My Plugin Test Meeting");
-  // final nameText = TextEditingController(text: "Plugin Test User");
-  // final emailText = TextEditingController(text: "fake@email.com");
-  // final iosAppBarRGBAColor =
-  // TextEditingController(text: "#0080FF80"); //transparent blue
-  // bool? isAudioOnly = true;
-  // bool? isAudioMuted = true;
-  // bool? isVideoMuted = true;
-  // final roomText = TextEditingController(text: "jitsi-meet-wrapper-test-room");
-  // final subjectText = TextEditingController(text: "My Plugin Test Meeting");
-  // final tokenText = TextEditingController();
-  // // final userDisplayNameText = TextEditingController(text: "Plugin Test User");
-  // final userEmailText = TextEditingController(text: "fake@email.com");
-  // final userAvatarUrlText = TextEditingController();
+  /// Handle incoming links - the ones that the app will recieve from the OS
+  /// while already started.
+  // void _handleIncomingLinks() {
+  //   if (!kIsWeb) {
+  //     // It will handle app links while the app is already started - be it in
+  //     // the foreground or in the background.
+  //     _sub = uriLinkStream.listen((Uri? uri) {
+  //       if (!mounted) return;
+  //       print('got uri: $uri');
+  //       setState(() {
+  //         _latestUri = uri;
+  //         // SchedulerBinding.instance.addPostFrameCallback((_) {
+  //         //   Navigator.of(context)
+  //         //       .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+  //         //     return OtpScreen();
+  //         //   }));
+  //         context.push('/pjoin/eHZUeHJRVTd5LytNR2NUU3VWZm1qZz09');
+  //           // Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
+  //         // });
+  //
+  //         _err = null;
+  //       });
+  //     }, onError: (Object err) {
+  //       if (!mounted) return;
+  //       print('got err: $err');
+  //       setState(() {
+  //         _latestUri = null;
+  //         if (err is FormatException) {
+  //           _err = err;
+  //         } else {
+  //           _err = null;
+  //         }
+  //       });
+  //     });
+  //   }
+  // }
 
-  bool isAudioMuted = false;
-  bool isAudioOnly = false;
-  bool isVideoMuted = false;
-
+  /// Handle the initial Uri - the one the app was started with
+  ///
+  /// **ATTENTION**: `getInitialLink`/`getInitialUri` should be handled
+  /// ONLY ONCE in your app's lifetime, since it is not meant to change
+  /// throughout your app's life.
+  ///
+  /// We handle all exceptions, since it is called from initState.
+  // Future<void> _handleInitialUri() async {
+  //   // In this example app this is an almost useless guard, but it is here to
+  //   // show we are not going to call getInitialUri multiple times, even if this
+  //   // was a weidget that will be disposed of (ex. a navigation route change).
+  //   if (!_initialUriIsHandled) {
+  //     _initialUriIsHandled = true;
+  //     try {
+  //       final uri = await getInitialUri();
+  //       if (uri == null) {
+  //         print('no initial uri');
+  //       } else {
+  //         print('got initial uri: $uri');
+  //         context.go('/pjoin/eHZUeHJRVTd5LytNR2NUU3VWZm1qZz09');
+  //       }
+  //       if (!mounted) return;
+  //       setState(() => _initialUri = uri);
+  //     } on PlatformException {
+  //       // Platform messages may fail but we ignore the exception
+  //       print('falied to get initial uri');
+  //     } on FormatException catch (err) {
+  //       if (!mounted) return;
+  //       print('malformed initial uri');
+  //       setState(() => _err = err);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home:HomeScreen(),
+    final queryParams = _latestUri?.queryParametersAll.entries.toList();
+    return MaterialApp.router(
       builder:EasyLoading.init(),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
       debugShowCheckedModeBanner: false,
       title: 'برهان',
+      routerConfig: GoRouter(errorBuilder:(context, state) {
+        print("state>"+state.uri.toString());
+        print("state>"+state.uri.path.toString());
+        print("state>"+state.pathParameters['id'].toString());
+        return SizedBox();
+      },routes: [
+        GoRoute(
+          path: "/",
+          builder: (context, state) =>  HomeScreen(),
+          routes:[
+            GoRoute(
+              path: "pjoin/:id",
+              builder:(context, state) {
+                return OtpScreen(id:state.pathParameters['id']??'',mobileNumber:'',meetingId:'',);
+              },
+            ),
+            GoRoute(
+              path: "meet",
+              builder:(context, state) {
+                print("state>"+state.uri.queryParameters['m'].toString());
+                return SendMobileScreen(meetingId:state.uri.queryParameters['m']??'');
+              },
+            ),
+            GoRoute(
+              path: "join/:id",
+              builder:(context, state) {
+                return SendMobileScreen(meetingId:state.pathParameters['id']??'');
+              },
+            ),
+          ],
+        ),
+      ]),
+    );
+    // return MaterialApp(
+    //   builder:EasyLoading.init(),
+    //   localizationsDelegates: context.localizationDelegates,
+    //   supportedLocales: context.supportedLocales,
+    //   locale: context.locale,
+    //   debugShowCheckedModeBanner: false,
+    //   title: 'برهان',
+    //   home: Scaffold(
+    //     key: _scaffoldKey,
+    //     appBar: AppBar(
+    //       title: const Text('uni_links example app'),
+    //     ),
+    //     body: ListView(
+    //       shrinkWrap: true,
+    //       padding: const EdgeInsets.all(8.0),
+    //       children: [
+    //         if (_err != null)
+    //           ListTile(
+    //             title: const Text('Error', style: TextStyle(color: Colors.red)),
+    //             subtitle: Text('$_err'),
+    //           ),
+    //         ListTile(
+    //           title: const Text('Initial Uri'),
+    //           subtitle: Text('$_initialUri'),
+    //         ),
+    //         if (!kIsWeb) ...[
+    //           ListTile(
+    //             title: const Text('Latest Uri'),
+    //             subtitle: Text('$_latestUri'),
+    //           ),
+    //           ListTile(
+    //             title: const Text('Latest Uri (path)'),
+    //             subtitle: Text('${_latestUri?.path}'),
+    //           ),
+    //           ExpansionTile(
+    //             initiallyExpanded: true,
+    //             title: const Text('Latest Uri (query parameters)'),
+    //             children: queryParams == null
+    //                 ? const [ListTile(dense: true, title: Text('null'))]
+    //                 : [
+    //               for (final item in queryParams)
+    //                 ListTile(
+    //                   title: Text(item.key),
+    //                   trailing: Text(item.value.join(', ')),
+    //                 )
+    //             ],
+    //           ),
+    //         ],
+    //         _cmdsCard(_cmds),
+    //         const Divider(),
+    //       ],
+    //     ),
+    //   ),
+    // );
+  }
+
+  Widget _cmdsCard(List<String>? commands) {
+    Widget platformCmds;
+
+    if (commands == null) {
+      platformCmds = const Center(child: Text('Unsupported platform'));
+    } else {
+      platformCmds = Column(
+        children: [
+          const [
+            if (kIsWeb)
+              Text('Append this path to the Web app\'s URL, replacing `#/`:\n')
+            else
+              Text('To populate above fields open a terminal shell and run:\n'),
+          ],
+          intersperse(
+              commands.map<Widget>((cmd) => InkWell(
+                onTap: () => _printAndCopy(cmd),
+                child: Text('\n$cmd\n', style: _cmdStyle),
+              )),
+              const Text('or')),
+          [
+            Text(
+              '(tap on any of the above commands to print it to'
+                  ' the console/logger and copy to the device clipboard.)',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ]
+        ].expand((el) => el).toList(),
+      );
+    }
+
+    return Card(
+      margin: const EdgeInsets.only(top: 20.0),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: platformCmds,
+      ),
     );
   }
 
-  // Widget buildMeetConfig() {
-  //   return Column(mainAxisAlignment: MainAxisAlignment.center,
-  //     crossAxisAlignment: CrossAxisAlignment.center,mainAxisSize: MainAxisSize.max,
-  //     children: <Widget>[
-  //       TextField(decoration: InputDecoration(
-  //           filled: true,
-  //           fillColor: Color(0xFFF2F2F2),
-  //           focusedBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.red),
-  //           ),
-  //           disabledBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.orange),
-  //           ),
-  //           enabledBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.green),
-  //           ),
-  //           border: OutlineInputBorder(
-  //               borderRadius: BorderRadius.all(Radius.circular(4)),
-  //               borderSide: BorderSide(width: 1,)
-  //           ),
-  //           errorBorder: OutlineInputBorder(
-  //               borderRadius: BorderRadius.all(Radius.circular(4)),
-  //               borderSide: BorderSide(width: 1,color: Colors.black)
-  //           ),
-  //           focusedErrorBorder: OutlineInputBorder(
-  //               borderRadius: BorderRadius.all(Radius.circular(4)),
-  //               borderSide: BorderSide(width: 1,color: Colors.yellowAccent)
-  //           ),
-  //           hintText: "Room Id",
-  //           hintStyle: TextStyle(fontSize: 16,color: Color(0xFFB3B1B1)),
-  //         ), controller:roomIdController,
-  //       ),
-  //       TextField(decoration: InputDecoration(
-  //         filled: true,
-  //         fillColor: Color(0xFFF2F2F2),
-  //         focusedBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.red),
-  //         ),
-  //         disabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.orange),
-  //         ),
-  //         enabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.green),
-  //         ),
-  //         border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,)
-  //         ),
-  //         errorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.black)
-  //         ),
-  //         focusedErrorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.yellowAccent)
-  //         ),
-  //         hintText: "Name",
-  //         hintStyle: TextStyle(fontSize: 16,color: Color(0xFFB3B1B1)),
-  //       ), controller:nameController,
-  //       ),
-  //       TextField(decoration: InputDecoration(
-  //         filled: true,
-  //         fillColor: Color(0xFFF2F2F2),
-  //         focusedBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.red),
-  //         ),
-  //         disabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.orange),
-  //         ),
-  //         enabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.green),
-  //         ),
-  //         border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,)
-  //         ),
-  //         errorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.black)
-  //         ),
-  //         focusedErrorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.yellowAccent)
-  //         ),
-  //         hintText: "Phone",
-  //         hintStyle: TextStyle(fontSize: 16,color: Color(0xFFB3B1B1)),
-  //       ), controller:phoneController,
-  //       ),
-  //       TextField(decoration: InputDecoration(
-  //         filled: true,
-  //         fillColor: Color(0xFFF2F2F2),
-  //         focusedBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.red),
-  //         ),
-  //         disabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.orange),
-  //         ),
-  //         enabledBorder: OutlineInputBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(4)),
-  //           borderSide: BorderSide(width: 1,color: Colors.green),
-  //         ),
-  //         border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,)
-  //         ),
-  //         errorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.black)
-  //         ),
-  //         focusedErrorBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(4)),
-  //             borderSide: BorderSide(width: 1,color: Colors.yellowAccent)
-  //         ),
-  //         hintText: "Otp",
-  //         hintStyle: TextStyle(fontSize: 16,color: Color(0xFFB3B1B1)),
-  //       ), controller:otpController,
-  //       ),
-  //       // const SizedBox(height: 200,),
-  //       // // _buildTextField(labelText: "Room", controller: roomText),
-  //       // const SizedBox(height: 16.0),
-  //       // _buildTextField(labelText: "Subject", controller: subjectText),
-  //       // const SizedBox(height: 16.0),
-  //       // _buildTextField(labelText: "Token", controller: tokenText),
-  //       // const SizedBox(height: 16.0),
-  //       // _buildTextField(
-  //       //   labelText: "User Display Name",
-  //       //   controller: userDisplayNameText,
-  //       // ),
-  //       // const SizedBox(height: 16.0),
-  //       // _buildTextField(
-  //       //   labelText: "User Email",
-  //       //   controller: userEmailText,
-  //       // ),
-  //       // const SizedBox(height: 16.0),
-  //       // _buildTextField(
-  //       //   labelText: "User Avatar URL",
-  //       //   controller: userAvatarUrlText,
-  //       // ),
-  //       // const SizedBox(height: 16.0),
-  //       // CheckboxListTile(
-  //       //   title: const Text("Audio Muted"),
-  //       //   value: isAudioMuted,
-  //       //   onChanged: _onAudioMutedChanged,
-  //       // ),
-  //       // const SizedBox(height: 16.0),
-  //       // CheckboxListTile(
-  //       //   title: const Text("Audio Only"),
-  //       //   value: isAudioOnly,
-  //       //   onChanged: _onAudioOnlyChanged,
-  //       // ),
-  //       // const SizedBox(height: 16.0),
-  //       // CheckboxListTile(
-  //       //   title: const Text("Video Muted"),
-  //       //   value: isVideoMuted,
-  //       //   onChanged: _onVideoMutedChanged,
-  //       // ),
-  //       Center(
-  //         child: SizedBox(
-  //           height: 64.0,
-  //           width: double.maxFinite,
-  //           child: ElevatedButton(
-  //             onPressed: () => _joinMeeting(),
-  //             child: const Text(
-  //               "Join Meeting",
-  //               style: TextStyle(color: Colors.white),
-  //             ),
-  //             style: ButtonStyle(
-  //               backgroundColor:
-  //               MaterialStateColor.resolveWith((states) => Colors.blue),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       const SizedBox(height: 48.0),
-  //     ],
-  //   );
-  // }
+  Future<void> _printAndCopy(String cmd) async {
+    print(cmd);
 
-  _onAudioOnlyChanged(bool? value) {
-    setState(() {
-      isAudioOnly = value!;
-    });
-  }
-
-  _onAudioMutedChanged(bool? value) {
-    setState(() {
-      isAudioMuted = value!;
-    });
-  }
-
-  _onVideoMutedChanged(bool? value) {
-    setState(() {
-      isVideoMuted = value!;
-    });
-  }
-
-  // _joinMeeting() async {
-  //   if(roomIdController.text.isNotEmpty&&nameController.text.isNotEmpty&&
-  //       phoneController.text.isNotEmpty&&otpController.text.isNotEmpty){
-  //     // String roomText='53d5c60';
-  //     // String roomText='db125fa';
-  //     // String roomText='f58a18d';
-  //     String roomText='c4fc911';
-  //
-  //     // API : https://interrog.opp.gov.om
-  //     // Jitsi : https://ris.opp.gov.om
-  //
-  //     // String nameText='Test User';
-  //     // String nameText='RIS_TST_LOF1';
-  //     // String? apiUrl = Uri.encodeFull("https://ijmeet.com/api/mdetail/" + roomText + "?name=" + nameText);
-  //
-  //     // String? apiUrl = Uri.encodeFull("https://interrog.opp.gov.om/api/mdetail/" + roomText + "?name=" + nameText);
-  //     // String? apiUrl = Uri.encodeFull("https://opp.ijmeet.com/api/mdetail/" + roomText + "?name=" + nameText+
-  //     //     '&phone=71131936'+'&otp=1234');
-  //     // print("apiUrl>>"+apiUrl.toString());
-  //     // debugPrint("Start: $apiUrl");
-  //     // final queryParameters = {'name':'Ahmed','phone': '71131936', 'otp': '1234',};
-  //     final queryParameters = {'name':nameController.text,'phone': phoneController.text, 'otp': otpController.text};
-  //
-  //     // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/" + $roomText', queryParameters);
-  //     // final uri = Uri.https('opp.ijmeet.com', '/api/mdetail/$roomText', queryParameters);
-  //     final uri = Uri.https('interrog.opp.gov.om', '/api/mdetail/${roomIdController.text}', queryParameters);
-  //     var response = await http.get(uri,headers:{'Content-Type': 'application/json', 'Accept': 'application/json'});
-  //
-  //     print("Url>>"+uri.scheme+'://'+uri.host+uri.path.toString());
-  //     log("respIs>>"+response.body);
-  //     // if (response.statusCode == 200||response.statusCode==201) {
-  //     //   log("respIs>>"+response.body);
-  //     // }
-  //     final data = jsonDecode(response.body);
-  //     final meeting = data['data']['meeting'];
-  //     final config = data['data']['config'];
-  //     final meetingName = meeting['name'];
-  //     final email = meeting['email'];
-  //     final meetingId = meeting['m_id'];
-  //     final conferenceUrl = data['data']['conference_url'];
-  //     final participantId = meeting['participant_id'];
-  //     // String? serverUrl = "https://" + conferenceUrl + "/";
-  //     String? serverUrl = 'https://worlditevents.com/';
-  //     // String? serverUrl = 'https://ris.opp.gov.om/';
-  //
-  //     // Map valueMap = jsonDecode(config.toString());
-  //     //   print("config>"+jsonEncode(config));
-  //     print("conferenceUrl>>"+conferenceUrl.toString());
-  //     Map<FeatureFlag, Object> featureFlags = {};
-  //     if (Platform.isAndroid) {
-  //       featureFlags[FeatureFlag.isCallIntegrationEnabled] = false;
-  //     } else if (Platform.isIOS) {
-  //       featureFlags[FeatureFlag.isPipEnabled] = false;
-  //     }
-  //
-  //     var options = JitsiMeetingOptions(
-  //       roomNameOrUrl:meetingId,
-  //       serverUrl: serverUrl,
-  //       subject: meetingName,
-  //       token: '',configOverrides:jsonDecode(jsonEncode(config)),
-  //       isAudioMuted: isAudioMuted,
-  //       isAudioOnly: isAudioOnly,
-  //       isVideoMuted: isVideoMuted,
-  //       userDisplayName: nameController.text,
-  //       // userEmail: 'Ahmed@ijtimaati.com',
-  //       userEmail: email,
-  //       featureFlags: featureFlags,
-  //     );
-  //
-  //     debugPrint("JitsiMeetingOptions: $options");
-  //     try{
-  //       await JitsiMeetWrapper.joinMeeting(
-  //         options: options,
-  //         listener: JitsiMeetingListener(
-  //           onOpened: () => debugPrint("onOpened"),
-  //           onConferenceWillJoin: (url) {
-  //             debugPrint("onConferenceWillJoin: url: $url");
-  //           },
-  //           onConferenceJoined: (url) {
-  //             debugPrint("onConferenceJoined: url: $url");
-  //           },
-  //           onConferenceTerminated: (url, error) {
-  //             debugPrint("onConferenceTerminated: url: $url, error: $error");
-  //           },
-  //           onAudioMutedChanged: (isMuted) {
-  //             debugPrint("onAudioMutedChanged: isMuted: $isMuted");
-  //           },
-  //           onVideoMutedChanged: (isMuted) {
-  //             debugPrint("onVideoMutedChanged: isMuted: $isMuted");
-  //           },
-  //           onScreenShareToggled: (participantId, isSharing) {
-  //             debugPrint(
-  //               "onScreenShareToggled: participantId: $participantId, "
-  //                   "isSharing: $isSharing",
-  //             );
-  //           },
-  //           onParticipantJoined: (email, name, role, participantId) {
-  //             debugPrint(
-  //               "onParticipantJoined: email: $email, name: $name, role: $role, "
-  //                   "participantId: $participantId",
-  //             );
-  //           },
-  //           onParticipantLeft: (participantId) {
-  //             debugPrint("onParticipantLeft: participantId: $participantId");
-  //           },
-  //           onParticipantsInfoRetrieved: (participantsInfo, requestId) {
-  //             debugPrint(
-  //               "onParticipantsInfoRetrieved: participantsInfo: $participantsInfo, "
-  //                   "requestId: $requestId",
-  //             );
-  //           },
-  //           onChatMessageReceived: (senderId, message, isPrivate) {
-  //             debugPrint(
-  //               "onChatMessageReceived: senderId: $senderId, message: $message, "
-  //                   "isPrivate: $isPrivate",
-  //             );
-  //           },
-  //           onChatToggled: (isOpen) => debugPrint("onChatToggled: isOpen: $isOpen"),
-  //           onClosed: () => debugPrint("onClosed"),
-  //         ),
-  //       );
-  //     }catch(e){
-  //       print("errrr>>"+e.toString());
-  //     }
-  //   }else{
-  //     Fluttertoast.showToast(
-  //         msg: 'يرجي ملئ الفراغات',
-  //         toastLength: Toast.LENGTH_SHORT,
-  //         gravity: ToastGravity.CENTER,
-  //         timeInSecForIosWeb: 1,
-  //         backgroundColor: Colors.red,
-  //         textColor: Colors.white,
-  //         fontSize: 16.0
-  //     );
-  //   }
-  // }
-
-  // _joinMeeting2() async {
-  //   String? apiUrl = Uri.encodeFull("https://ijmeet.com/api/mdetail/" + roomText.text + "?name=" + nameText.text);
-  //   debugPrint("Start: $apiUrl");
-  //   var response = await http.get(Uri.parse(apiUrl));
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-  //     final meeting = data['data']['meeting'];
-  //     final meetingName = meeting['name'];
-  //     final meetingId = meeting['m_id'];
-  //     final conferenceUrl = data['data']['conference_url'];
-  //     final participantId = meeting['participant_id'];
-  //     String? serverUrl = "https://" + conferenceUrl + "/";
-  //
-  //
-  //     var options = JitsiMeetingOptions(room: meetingId, roomNameOrUrl: '')
-  //       ..serverURL = serverUrl
-  //       ..subject = meetingName
-  //       ..userDisplayName = nameText.text
-  //       ..userEmail = "fake@email.com"
-  //       ..iosAppBarRGBAColor = "#0080FF80"
-  //       ..audioOnly = false
-  //       ..audioMuted = false
-  //       ..videoMuted = false
-  //       ..featureFlags.addAll(featureFlags)
-  //       ..webOptions = {
-  //         "roomName": meetingId,
-  //         "width": "100%",
-  //         "height": "100%",
-  //         "enableWelcomePage": false,
-  //         "chromeExtensionBanner": null,
-  //         "userInfo": {
-  //           "displayName": nameText.text,
-  //           "participantID": participantId,
-  //           "baseURL": "https://ijmeet.com/"
-  //         }
-  //       };
-  //     debugPrint("JitsiMeetingOptions: $options");
-  //     await JitsiMeet.joinMeeting(
-  //       options,
-  //       listener: JitsiMeetingListener(
-  //           onConferenceWillJoin: (message) {
-  //             debugPrint("${options.room} will join with message: $message");
-  //           },
-  //           onConferenceJoined: (message) {
-  //             debugPrint("${options.room} joined with message: $message");
-  //           },
-  //           onConferenceTerminated: (message) {
-  //             debugPrint("${options.room} terminated with message: $message");
-  //           },
-  //           genericListeners: [
-  //             JitsiGenericListener(
-  //                 eventName: 'readyToClose',
-  //                 callback: (dynamic message) {
-  //                   debugPrint("readyToClose callback");
-  //                 }),
-  //           ]),
-  //     );
-  //   } else {
-  //     String? statusc = response.statusCode.toString();
-  //     debugPrint("Start: $statusc");
-  //   }
-  //   debugPrint("Start:End");
-  // }
-
-
-
-    Widget _buildTextField({
-    required String labelText,
-    required TextEditingController controller,
-    String? hintText,
-  }) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: labelText,
-          hintText: hintText),
+    await Clipboard.setData(ClipboardData(text: cmd));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Copied to Clipboard')),
     );
   }
 
-  // var doc_verify_url = "https://cv.ijmeet.com/"+room+"/"+participant_id+"/"+localStorage.getItem('language');
-  // if(getFlagsData("doc_verify")){
-  // doc_verify_url = getFlagsData("doc_verify")+"/"+room+"/"+participant_id+"/"+localStorage.getItem('language');
-  // }
+  void _showSnackBar(String msg) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = _scaffoldKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+        ));
+      }
+    });
+  }
+}
 
+List<String>? getCmds() {
+  late final String cmd;
+  var cmdSuffix = '';
+
+  const plainPath = 'path/subpath';
+  const args = 'path/portion/?uid=123&token=abc';
+  const emojiArgs =
+      '?arr%5b%5d=123&arr%5b%5d=abc&addr=1%20Nowhere%20Rd&addr=Rand%20City%F0%9F%98%82';
+
+  if (kIsWeb) {
+    return [
+      plainPath,
+      args,
+      emojiArgs,
+      // Cannot create malformed url, since the browser will ensure it is valid
+    ];
+  }
+
+  if (Platform.isIOS) {
+    cmd = '/usr/bin/xcrun simctl openurl booted';
+  } else if (Platform.isAndroid) {
+    cmd = '\$ANDROID_HOME/platform-tools/adb shell \'am start'
+        ' -a android.intent.action.VIEW'
+        ' -c android.intent.category.BROWSABLE -d';
+    cmdSuffix = "'";
+  } else {
+    return null;
+  }
+
+  // https://orchid-forgery.glitch.me/mobile/redirect/
+  return [
+    // '$cmd "https://blog.logrocket.com',
+    '$cmd "unilinks://host/$plainPath"$cmdSuffix',
+    '$cmd "unilinks://example.com/$args"$cmdSuffix',
+    '$cmd "unilinks://example.com/$emojiArgs"$cmdSuffix',
+    '$cmd "unilinks://@@malformed.invalid.url/path?"$cmdSuffix',
+  ];
+}
+
+List<Widget> intersperse(Iterable<Widget> list, Widget item) {
+  final initialValue = <Widget>[];
+  return list.fold(initialValue, (all, el) {
+    if (all.isNotEmpty) all.add(item);
+    all.add(el);
+    return all;
+  });
 }
 
 
@@ -546,3 +380,144 @@ Future<void> configLoading() async {
     ..userInteractions = true
     ..dismissOnTap = false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import 'dart:convert';
+// import 'dart:developer';
+// import 'dart:io';
+// import 'package:easy_localization/easy_localization.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_easyloading/flutter_easyloading.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:get_it/get_it.dart';
+// // import 'package:jitsi_meet_wrapper/jitsi_meet_wrapper.dart';
+// // import 'package:jitsi_meeting_plus/jitsi_meet_plus.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:test_video_conference/cache_helper.dart';
+// import 'package:test_video_conference/constants.dart';
+// import 'package:test_video_conference/injections.dart';
+// import 'package:test_video_conference/screens/home_screen.dart';
+// import 'package:test_video_conference/widgets/p_button.dart';
+// // import 'package:uqudosdk_flutter/UqudoIdPlugin.dart';
+//
+// class MyHttpOverrides extends HttpOverrides{
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+//   }
+// }
+// Future<void> main() async {
+//   HttpOverrides.global = MyHttpOverrides();
+//   configLoading();
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await CacheHelper.init();
+//   // UqudoIdPlugin.init();
+//   // UqudoIdPlugin.setLocale('en');
+//   await EasyLocalization.ensureInitialized();
+//   Injections().setupDependencyInjection();
+//   GetIt.I.isReady<SharedPreferences>().then((_) {
+//     runApp(EasyLocalization(supportedLocales: const [Locale('ar'), Locale('en')],
+//       path: 'assets/translations',
+//       fallbackLocale: const Locale('en'),
+//       child:  MyApp(),));
+//   });
+//   // runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         home: Meeting());
+//   }
+// }
+//
+// class Meeting extends StatefulWidget {
+//   @override
+//   _MeetingState createState() => _MeetingState();
+// }
+//
+// class _MeetingState extends State<Meeting> {
+//   final  roomIdController = TextEditingController();
+//   final  nameController = TextEditingController();
+//   final  phoneController = TextEditingController();
+//   final  otpController = TextEditingController();
+//   bool isAudioMuted = false;
+//   bool isAudioOnly = false;
+//   bool isVideoMuted = false;
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return MaterialApp(
+//       home:HomeScreen(),
+//       builder:EasyLoading.init(),
+//       localizationsDelegates: context.localizationDelegates,
+//       supportedLocales: context.supportedLocales,
+//       locale: context.locale,
+//       debugShowCheckedModeBanner: false,
+//       title: 'برهان',
+//     );
+//   }
+//
+// }
+//
+//
+// Future<void> configLoading() async {
+//   EasyLoading.instance
+//     ..displayDuration = const Duration(milliseconds: 500)
+//     ..indicatorType = EasyLoadingIndicatorType.circle
+//     ..loadingStyle = EasyLoadingStyle.custom
+//     ..indicatorSize = 38.0
+//     ..radius = 0.0
+//     ..progressWidth=0.2
+//     ..progressColor = Constants.yellow
+//     ..backgroundColor = Colors.transparent
+//     ..boxShadow = <BoxShadow>[]
+//     ..maskType=EasyLoadingMaskType.clear
+//     ..indicatorColor = Constants.yellow
+//     ..textColor = Colors.white
+//     ..maskColor = Colors.grey[100]
+//     ..userInteractions = true
+//     ..dismissOnTap = false;
+// }

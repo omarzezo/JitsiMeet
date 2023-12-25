@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:test_video_conference/cache_helper.dart';
 import 'package:test_video_conference/constants.dart';
 import 'package:test_video_conference/models/response_model.dart';
@@ -23,6 +24,7 @@ class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
+
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
@@ -61,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SizedBox(height:45,
                   child: PButton(onPressed:() {
                     // JitsiMeetService().getFaceToken();
-                    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen()));
+                    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>SendMobileScreen(meetingId:'',)));
                   },title:'join_meeting'.tr(),fillColor:Constants.black,textColor:Constants.white,style:PStyle.tertiary,),
                 ),
               ),

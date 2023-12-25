@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart';
@@ -18,6 +20,8 @@ import 'package:test_video_conference/widgets/p_textfield.dart';
 
 
 class SendMobileScreen extends StatefulWidget {
+  final String meetingId;
+  SendMobileScreen({required this.meetingId});
   @override
   _SendMobileScreenState createState() => _SendMobileScreenState();
 }
@@ -25,8 +29,17 @@ class SendMobileScreen extends StatefulWidget {
 class _SendMobileScreenState extends State<SendMobileScreen> {
   // String? mobileNumber='71131936';
   String? mobileNumber='';
+  Uri? _latestUri;
+  Object? _err;
+  StreamSubscription? _sub;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final queryParams = _latestUri?.queryParametersAll.entries.toList();
     return Scaffold(resizeToAvoidBottomInset: true,
       appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
@@ -55,7 +68,8 @@ class _SendMobileScreenState extends State<SendMobileScreen> {
                   ResponseModel model=   ResponseModel.fromJson(jsonDecode(const Utf8Decoder().convert(res.bodyBytes)));
                   handleCallbackMsg(res,context);
                   if(model.success!=null&&model.success!){
-                    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>OtpScreen()));
+                    Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>
+                        OtpScreen(id:'',meetingId:widget.meetingId,mobileNumber:'',)));
                   }
                 }
               }else{
@@ -67,4 +81,5 @@ class _SendMobileScreenState extends State<SendMobileScreen> {
       ]),
     );
   }
+
 }

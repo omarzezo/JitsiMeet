@@ -26,8 +26,8 @@ class PublicWebViewScreenState extends State<PublicWebViewScreen> {
 
   @override
   dispose() {
-    if(webView!=null){
-      try{webView!.stopLoading();}catch(e){}}
+    // if(webView!=null){
+    //   try{webView!.stopLoading();}catch(e){}}
     super.dispose();
   }
 
@@ -36,16 +36,16 @@ class PublicWebViewScreenState extends State<PublicWebViewScreen> {
     super.initState();
   }
 
-  Future callAgain() async {
-    String n=widget.name??'';
-    String u=widget.url??'';
-    Future.delayed(const Duration(seconds:7), () {
-      if(webView!=null){
-        try{webView!.stopLoading();}catch(e){}}
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>
-          PublicWebView2Screen(url:u, name:n)));
-    });
-  }
+  // Future callAgain() async {
+  //   String n=widget.name??'';
+  //   String u=widget.url??'';
+  //   Future.delayed(const Duration(seconds:7), () {
+  //     if(webView!=null){
+  //       try{webView!.stopLoading();}catch(e){}}
+  //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) =>
+  //         PublicWebView2Screen(url:u, name:n)));
+  //   });
+  // }
   // Future callPermission() async {
   //   await Permission.camera.request();
   //   await Permission.microphone.request();
@@ -60,8 +60,8 @@ BuildContext? parentCOntext;
       onWillPop:_onBackPressed,
       child: Scaffold(
           appBar:appBar(context: context,text:"${'hello'.tr()} ${widget.name}",isCenter:true,onBack:() {
-            if(webView!=null){
-              try{webView!.stopLoading();}catch(e){}}
+            // if(webView!=null){
+            //   try{webView!.stopLoading();}catch(e){}}
             finish(parentCOntext!);
 
             // Navigator.pop(context);
@@ -102,8 +102,8 @@ BuildContext? parentCOntext;
             controller.getOriginalUrl().then((value){
               // print("testtt>>"+(value?.path??''));
               if((value?.path??'').toString()=='/'){
-                if(webView!=null){
-                  try{webView!.stopLoading();}catch(e){}}
+                // if(webView!=null){
+                //   try{webView!.stopLoading();}catch(e){}}
                 finish(parentCOntext!);
               }
             });
@@ -131,8 +131,8 @@ BuildContext? parentCOntext;
             title:const PText(title:'Do You Want to Exit From Meeting ?',size:PSize.large,fontWeight:FontWeight.w600),
             actions: <Widget>[
               PButton(onPressed:() {
-                if(webView!=null){
-                  try{webView!.stopLoading();}catch(e){}}
+                // if(webView!=null){
+                //   try{webView!.stopLoading();}catch(e){}}
                 Navigator.pop(context);
                 finish(parentCOntext!);
                 // Navigator.pop(context);Navigator.pop(context);

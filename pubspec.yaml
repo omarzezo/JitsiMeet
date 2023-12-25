@@ -47,9 +47,13 @@ dependencies:
   permission_handler: ^10.4.3
   url_launcher: ^6.1.12
   flutter_inappwebview: any
+  webview_flutter:
   get_it: ^7.2.0
   easy_localization: ^3.0.1
   dropdown_button2: ^2.0.0
+  screen_protector: ^1.4.1
+#  uni_links: ^0.5.1
+  go_router:
 #  uqudosdk_flutter:
 dev_dependencies:
   flutter_test:

@@ -20,13 +20,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 class JoinMeetingScreen extends StatefulWidget {
+  final String meetingId;
+  final String mobileNumber;
+  JoinMeetingScreen({required this.mobileNumber,required this.meetingId});
   @override
   _JoinMeetingScreenState createState() => _JoinMeetingScreenState();
 }
 
 class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
   String? name,meetingId;
-
+  TextEditingController meetingController=TextEditingController();
   Future callPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       // Permission.storage,
@@ -43,6 +46,12 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
   @override
   void initState() {
     super.initState();
+    if(widget.meetingId.isNotEmpty){
+      meetingId=widget.meetingId;
+      meetingId=meetingId!.replaceAll(RegExp(r'[^\w\s]+'),'').replaceAll('_','');
+      meetingController.text=meetingId??'';
+    }
+    setState(() {});
     callPermission();
   }
   Future<bool> askStoragePermission() async{
@@ -104,7 +113,7 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
         ),
         ),
         Center(child: SizedBox(width:MediaQuery.sizeOf(context).width*0.94,
-          child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'meeting_id'.tr(), feedback: (value) {
+          child: PTextField(enabled:meetingController.text.isEmpty,controller:meetingController,borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'meeting_id'.tr(), feedback: (value) {
             meetingId=value;
           }, validator: (value){return null;},),
         ),
@@ -112,6 +121,7 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
         Center(child: SizedBox(height:44,width:MediaQuery.sizeOf(context).width*0.94,
           child: PButton(onPressed:() async {
             Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder: (_) =>WaitingScreen(
+                mobileNumber:widget.mobileNumber,
                 meetingId:meetingId,
                 name:name??'',
                 isHost:true)));
