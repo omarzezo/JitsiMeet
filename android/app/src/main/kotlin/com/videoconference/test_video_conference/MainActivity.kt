@@ -1,4 +1,4 @@
-package com.gcnt.ijmeet
+package com.conf.borhan
 import android.os.Bundle
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity

@@ -55,7 +55,7 @@
         <key>CFBundleTypeRole</key>
         <string>Editor</string>
         <key>CFBundleURLName</key>
-        <string>interrog.opp.gov.om</string>
+        <string>opp.ijmeet.com</string>
         <key>CFBundleURLSchemes</key>
         <array>
         <string>appscheme</string>

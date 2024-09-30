@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+// import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/constants.dart';
@@ -34,7 +34,7 @@ class _WebViewExampleState extends State<WebViewExample> {
   void initState() {
     super.initState();
     // callPermission();
-    late  PlatformWebViewControllerCreationParams params=PlatformWebViewControllerCreationParams();
+    late  PlatformWebViewControllerCreationParams params=const PlatformWebViewControllerCreationParams();
     final WebViewController controller = WebViewController.fromPlatformCreationParams(params,
       onPermissionRequest: (WebViewPermissionRequest request) {
       request.grant();
@@ -57,11 +57,11 @@ class _WebViewExampleState extends State<WebViewExample> {
           onWebResourceError: (WebResourceError error) {
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              debugPrint('blocking navigation to ${request.url}');
-              return NavigationDecision.prevent;
-            }
-            debugPrint('allowing navigation to ${request.url}');
+            // if (request.url.startsWith('https://www.youtube.com/')) {
+            //   debugPrint('blocking navigation to ${request.url}');
+            //   return NavigationDecision.prevent;
+            // }
+            // debugPrint('allowing navigation to ${request.url}');
             return NavigationDecision.navigate;
           },onUrlChange: (UrlChange change) {
             if(change.url!=null&&change.url!.isNotEmpty){
@@ -95,7 +95,7 @@ class _WebViewExampleState extends State<WebViewExample> {
     return WillPopScope(
       onWillPop:_onBackPressed,
       child: Scaffold(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.white,
         appBar:appBar(context: context,text:"${'hello'.tr()} ${widget.name}",isCenter:true,onBack:() {
           // if(webView!=null){
           //   try{webView!.stopLoading();}catch(e){}}
@@ -109,10 +109,10 @@ class _WebViewExampleState extends State<WebViewExample> {
       ),
     );
   }
-  Future<PermissionRequestResponse> getPermission(List<String> resources) async{
-    var item= await (PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT));
-    return item;
-  }
+  // Future<PermissionRequestResponse> getPermission(List<String> resources) async{
+  //   var item= await (PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT));
+  //   return item;
+  // }
 
   Future<bool> _onBackPressed() async {
     return await  showDialog(

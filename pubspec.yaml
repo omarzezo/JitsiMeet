@@ -46,7 +46,7 @@ dependencies:
   elegant_notification: ^1.6.4
   permission_handler: ^10.4.3
   url_launcher: ^6.1.12
-  flutter_inappwebview: any
+#  flutter_inappwebview: any
   webview_flutter:
   get_it: ^7.2.0
   easy_localization: ^3.0.1

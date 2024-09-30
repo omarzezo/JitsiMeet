@@ -251,46 +251,6 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     // );
   }
 
-  Widget _cmdsCard(List<String>? commands) {
-    Widget platformCmds;
-
-    if (commands == null) {
-      platformCmds = const Center(child: Text('Unsupported platform'));
-    } else {
-      platformCmds = Column(
-        children: [
-          const [
-            if (kIsWeb)
-              Text('Append this path to the Web app\'s URL, replacing `#/`:\n')
-            else
-              Text('To populate above fields open a terminal shell and run:\n'),
-          ],
-          intersperse(
-              commands.map<Widget>((cmd) => InkWell(
-                onTap: () => _printAndCopy(cmd),
-                child: Text('\n$cmd\n', style: _cmdStyle),
-              )),
-              const Text('or')),
-          [
-            Text(
-              '(tap on any of the above commands to print it to'
-                  ' the console/logger and copy to the device clipboard.)',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption,
-            ),
-          ]
-        ].expand((el) => el).toList(),
-      );
-    }
-
-    return Card(
-      margin: const EdgeInsets.only(top: 20.0),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: platformCmds,
-      ),
-    );
-  }
 
   Future<void> _printAndCopy(String cmd) async {
     print(cmd);
