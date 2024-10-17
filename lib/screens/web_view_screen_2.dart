@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_video_conference/common_methods.dart';
@@ -33,6 +34,8 @@ class _WebViewExampleState extends State<WebViewExample> {
   @override
   void initState() {
     super.initState();
+    _focusNode.addListener(_onFocusChange);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     // callPermission();
     late  PlatformWebViewControllerCreationParams params=const PlatformWebViewControllerCreationParams();
     final WebViewController controller = WebViewController.fromPlatformCreationParams(params,
@@ -41,7 +44,7 @@ class _WebViewExampleState extends State<WebViewExample> {
     },);
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.black)
+      ..setBackgroundColor(Colors.transparent)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
@@ -88,6 +91,26 @@ class _WebViewExampleState extends State<WebViewExample> {
     }
     _controller = controller;
   }
+  final FocusNode _focusNode = FocusNode();
+
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_onFocusChange);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (_focusNode.hasFocus) {
+      // Handle UI when the keyboard is opened
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    } else {
+      // Restore UI when the keyboard is closed
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
+  }
+
   BuildContext? parentCOntext;
   @override
   Widget build(BuildContext context) {
@@ -95,17 +118,18 @@ class _WebViewExampleState extends State<WebViewExample> {
     return WillPopScope(
       onWillPop:_onBackPressed,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         backgroundColor: Colors.white,
         appBar:appBar(context: context,text:"${'hello'.tr()} ${widget.name}",isCenter:true,onBack:() {
           // if(webView!=null){
           //   try{webView!.stopLoading();}catch(e){}}
-          finish(parentCOntext!);
-
+          // finish(parentCOntext!);
+          _onBackPressed();
           // Navigator.pop(context);
           // Navigator.pop(context);
           // Navigator.pop(context);
         },),
-        body: WebViewWidget(controller: _controller),
+        body: SafeArea(child: WebViewWidget(controller: _controller)),
       ),
     );
   }

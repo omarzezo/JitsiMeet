@@ -41,6 +41,7 @@ class _SendMobileScreenState extends State<SendMobileScreen> {
   Widget build(BuildContext context) {
     final queryParams = _latestUri?.queryParametersAll.entries.toList();
     return Scaffold(resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
          Padding(padding: const EdgeInsets.only(top:40,bottom:4),

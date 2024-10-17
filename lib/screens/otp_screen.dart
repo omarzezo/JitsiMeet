@@ -51,6 +51,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar:appBar(context: context,text:'OTP',isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
          Padding(padding: const EdgeInsets.only(top:40,bottom:4),

@@ -102,6 +102,7 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true),
       body:Column(crossAxisAlignment:CrossAxisAlignment.center,children: [
         Center(child: Padding(padding: const EdgeInsets.only(top:40),

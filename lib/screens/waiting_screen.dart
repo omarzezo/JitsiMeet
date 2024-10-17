@@ -53,6 +53,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar:appBar(context: context,text:'join_meeting'.tr(),isCenter:true,actions:[
         // PButton(onPressed:() {
         //   if(timer!=null){
@@ -92,7 +93,13 @@ class _WaitingScreenState extends State<WaitingScreen> {
    WaitingResponseModel model= await JitsiMeetService().callMDetail(context:context,name:widget.name??'', meetignId:widget.meetingId??'',
         mobile:widget.mobileNumber.isNotEmpty?widget.mobileNumber:CacheHelper.getData(key:'mobile')
        , otp: CacheHelper.getData(key:'pin')??'');
-    print('object>>'+model.msg.toString());
+
+    participantId=model.data?.participantId??'';
+    if(participantId.isEmpty){
+      participantId=model.data?.meeting?.participantId??'';
+    }
+    print('participantIdId>>'+participantId.toString());
+
     if(model.msg.toString()=='Meeting expired'){
       dismissLoader();
       ElegantNotification.error(title: Text(''),description: Text((model.msg??''))).show(context);
@@ -148,6 +155,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
     if(mDetailTimer!=null){mDetailTimer!.cancel();}
     if(statusTimer!=null){statusTimer!.cancel();}
     UserDataResponseModel model=await JitsiMeetService().getStatus(participantId: participantId,lang:context.locale.languageCode);
+    // participantId=model.data?.participantId??'';
     if(model.success!=null&&model.success!){
       dismissLoader();
       bool startWithVideoMuted=model.data!.config!.startWithVideoMuted=='no'?false:true;
@@ -156,7 +164,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       // String url="https://testinterrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
       String url="https://interrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
       Navigator.pop(context);
-      print('urlhhhhhhhh>>'+url.toString());
+      // print('urlhhhhhhhh>>'+Uri.parse(uri).toString());
       if(Platform.isAndroid){
         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder:(_)=>
             WebViewExample(url: url, name: widget.name??'')));
