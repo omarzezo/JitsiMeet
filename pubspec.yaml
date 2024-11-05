@@ -54,6 +54,7 @@ dependencies:
   screen_protector: ^1.4.1
 #  uni_links: ^0.5.1
   go_router:
+  no_screenshot: ^0.3.1
 #  uqudosdk_flutter:
 dev_dependencies:
   flutter_test:

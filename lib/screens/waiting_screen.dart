@@ -19,6 +19,7 @@ import 'package:test_video_conference/widgets/p_button.dart';
 import 'package:test_video_conference/widgets/p_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+bool isFirstLoad = true;
 
 class WaitingScreen extends StatefulWidget {
   final String? name;
@@ -136,7 +137,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
             WebViewExample(url: url, name: widget.name??'')));
             // PublicWebViewScreen(url: url, name: widget.name??'')));
       }else{
-        launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        await launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        try{
+          finish(context);
+        }catch(e){}
       }
     }else{
       bool userStatus=(model.data?.code??'')=='accept_waiting'?true:false;
@@ -170,7 +174,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
             WebViewExample(url: url, name: widget.name??'')));
             // PublicWebViewScreen(url: url, name: widget.name??'')));
       }else{
-        launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        await launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+        try{
+          finish(context);
+        }catch(e){}
       }
     }else{
       if((model.data?.code??'')=='reject_user'){

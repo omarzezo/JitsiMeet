@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_video_conference/common_methods.dart';
 import 'package:test_video_conference/constants.dart';
+import 'package:test_video_conference/screens/waiting_screen.dart';
 import 'package:test_video_conference/widgets/p_appbar.dart';
 import 'package:test_video_conference/widgets/p_button.dart';
 import 'package:test_video_conference/widgets/p_text.dart';
@@ -37,13 +38,13 @@ class _WebViewExampleState extends State<WebViewExample> {
     _focusNode.addListener(_onFocusChange);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     // callPermission();
-    late  PlatformWebViewControllerCreationParams params=const PlatformWebViewControllerCreationParams();
+    late  PlatformWebViewControllerCreationParams params = const PlatformWebViewControllerCreationParams();
     final WebViewController controller = WebViewController.fromPlatformCreationParams(params,
       onPermissionRequest: (WebViewPermissionRequest request) {
       request.grant();
     },);
-    controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    controller..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..clearCache()
       ..setBackgroundColor(Colors.transparent)
       ..setNavigationDelegate(
         NavigationDelegate(
@@ -70,7 +71,9 @@ class _WebViewExampleState extends State<WebViewExample> {
             if(change.url!=null&&change.url!.isNotEmpty){
               List<String> searchKeywords = List<String>.generate(change.url!.length, (index) => change.url![index]);
                 if(searchKeywords.last=='/'){
+                  try{
                   finish(parentCOntext!);
+                  }catch(e){}
                 }
             }
             debugPrint('url change to ${change.url}');
@@ -90,7 +93,15 @@ class _WebViewExampleState extends State<WebViewExample> {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
+    clearCache();
   }
+
+  void clearCache() async {
+    await _controller.clearCache();
+    await _controller.clearLocalStorage();
+    print('Cache cleared successfully!');
+  }
+
   final FocusNode _focusNode = FocusNode();
 
 
@@ -115,6 +126,24 @@ class _WebViewExampleState extends State<WebViewExample> {
   @override
   Widget build(BuildContext context) {
     parentCOntext=context;
+    // if(isFirstLoad) {
+    //   _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+    //     if (_controller != null) {
+    //       _controller.reload();
+    //       isFirstLoad=false;
+    //     }
+    //   });
+    // }
+    // if(isFirstLoad){
+    //   try{
+    //     Future.delayed(const Duration(seconds:4),() {
+    //       isFirstLoad=false;
+    //       Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder:(_)=>
+    //           WebViewExample(url: widget.url, name: widget.name??'')));
+    //     },);
+    //   }catch(e){}
+    // }
+
     return WillPopScope(
       onWillPop:_onBackPressed,
       child: Scaffold(

@@ -277,6 +277,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
+  no_screenshot:
+    dependency: "direct main"
+    description:
+      name: no_screenshot
+      sha256: ec3d86d7ee89a09c3a3939c1003012536ba4b3fcb4f8cbd23d87ada595c99258
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   path:
     dependency: transitive
     description:
@@ -385,10 +393,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: "6a2128648c854906c53fa8e33986fc0247a1116122f9534dd20e3ab9e16a32bc"
+      sha256: "4820fbfdb9478b1ebae27888254d445073732dae3d6ea81f0b7e06d5dedc3f02"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.8"
   screen_protector:
     dependency: "direct main"
     description:

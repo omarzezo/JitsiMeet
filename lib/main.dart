@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:no_screenshot/no_screenshot.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,8 +73,14 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     // _handleInitialUri();
   }
   Future<void> enableSecureMode() async {
+    await disableScreenshot();
     await ScreenProtector.protectDataLeakageOn();
     await ScreenProtector.preventScreenshotOn();
+  }
+  Future<void> disableScreenshot() async {
+    final noScreenshot = NoScreenshot.instance;
+    bool result = await noScreenshot.screenshotOff();
+    debugPrint('Screenshot Off: $result');
   }
   @override
   void dispose() {
