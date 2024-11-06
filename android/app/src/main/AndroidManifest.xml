@@ -32,6 +32,7 @@
         android:allowBackup="false"
         android:fullBackupOnly="false"
         android:hasFragileUserData="false"
+        android:usesCleartextTraffic="true"
         >
 <!--        android:usesCleartextTraffic="true"-->
 <!--        <provider-->

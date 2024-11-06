@@ -127,11 +127,16 @@ class _WaitingScreenState extends State<WaitingScreen> {
       dismissLoader();
       bool startWithVideoMuted=model.data!.config!.startWithVideoMuted=='no'?false:true;
       bool startWithAudioMuted=model.data!.config!.startWithAudioMuted=='no'?false:true;
-      // String url="https://opp.ijmeet.com/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+      String url="https://opp.ijmeet.com/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
       // String url="https://testinterrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-      String url="https://interrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+      // String url="https://interrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
       Navigator.pop(context);
       print('urlhhhhhhhh>>'+url.toString());
+
+      // await launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+      // try{
+      //   finish(context);
+      // }catch(e){}
       if(Platform.isAndroid){
         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder:(_)=>
             WebViewExample(url: url, name: widget.name??'')));
@@ -164,11 +169,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
       dismissLoader();
       bool startWithVideoMuted=model.data!.config!.startWithVideoMuted=='no'?false:true;
       bool startWithAudioMuted=model.data!.config!.startWithAudioMuted=='no'?false:true;
-      // String url="https://opp.ijmeet.com/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+      String url="https://opp.ijmeet.com/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
       // String url="https://testinterrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
-      String url="https://interrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
+      // String url="https://interrog.opp.gov.om/conf?meeting_id=${model.data?.meeting?.mId}&meeting_name=${model.data?.meeting?.name}&username=${widget.name}&startWithVideoMuted=$startWithVideoMuted&startWithAudioMuted=$startWithAudioMuted&participant_id=$participantId&conference_url=${model.data!.conferenceUrl}&face_url=https%3A%2F%2Fopp.ijmeet.com%2Fstorage%2Fprofile%2F0BYlblDphyvldzqjQoi3lwfBZXQ8Tmg7js3nkGSZ.png";
       Navigator.pop(context);
       // print('urlhhhhhhhh>>'+Uri.parse(uri).toString());
+      // await launchUrl(Uri.parse(url),mode:LaunchMode.inAppWebView);
+      // try{
+      //   finish(context);
+      // }catch(e){}
       if(Platform.isAndroid){
         Navigator.of(context).push<dynamic>(MaterialPageRoute<dynamic>(builder:(_)=>
             WebViewExample(url: url, name: widget.name??'')));

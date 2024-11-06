@@ -53,6 +53,10 @@ class _WebViewExampleState extends State<WebViewExample> {
           },
           onPageStarted: (String url) {
             debugPrint('Page started loading: $url');
+            // WebViewCookieManager().setCookie([
+            //   Cookie('name', 'value')..domain=''
+            //   ..httpOnly=false
+            // ])
           },
           onPageFinished: (String url) {
 
@@ -93,6 +97,7 @@ class _WebViewExampleState extends State<WebViewExample> {
       (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
+
     clearCache();
   }
 
@@ -158,7 +163,8 @@ class _WebViewExampleState extends State<WebViewExample> {
           // Navigator.pop(context);
           // Navigator.pop(context);
         },),
-        body: SafeArea(child: WebViewWidget(controller: _controller)),
+        body: SafeArea(child: WebViewWidget(controller: _controller,)),
+        // body: SafeArea(child: Webview),
       ),
     );
   }

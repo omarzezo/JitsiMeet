@@ -18,6 +18,7 @@ import 'package:test_video_conference/injections.dart';
 import 'package:test_video_conference/screens/home_screen.dart';
 import 'package:test_video_conference/screens/otp_screen.dart';
 import 'package:test_video_conference/screens/send_mobile_screen.dart';
+import 'package:test_video_conference/security_manager.dart';
 // import 'package:uni_links/uni_links.dart';
 
 class MyHttpOverrides extends HttpOverrides{
@@ -36,6 +37,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
   await EasyLocalization.ensureInitialized();
+  checkDeviceStatus();
+  checkSafeDevice();
+  isAdbEnabled();
+  isFridaRunning();
+  isRootedDevice();
+  isRealDevice();
+  checkJailbreakSniffer();
+  checkPhysicalDevice();
+  performDyldCheck();
+  checkForFrida();
+  performFridaCheck();
   await Permission.camera.request();
   await Permission.microphone.request();
   Injections().setupDependencyInjection();
