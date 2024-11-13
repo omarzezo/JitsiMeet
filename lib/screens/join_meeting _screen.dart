@@ -109,7 +109,7 @@ class _JoinMeetingScreenState extends State<JoinMeetingScreen> {
           child: SizedBox(width:MediaQuery.sizeOf(context).width*0.94,
             child: PTextField(borderRadius:4,fillColor:Constants.greyN3.withOpacity(0.3),hintText:'enter_name'.tr(), feedback: (value) {
               name=value;
-            }, validator: (value){return null;},),
+            }, validator: (value){return null;},),    
           ),
         ),
         ),
