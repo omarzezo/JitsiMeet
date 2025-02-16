@@ -54,8 +54,8 @@ dependencies:
   screen_protector: ^1.4.1
 #  uni_links: ^0.5.1
   go_router:
-  no_screenshot: ^0.3.1
-  flutter_security_checker: ^3.2.0
+#  no_screenshot: ^0.3.1
+#  flutter_security_checker: ^3.2.0
 #  root_jailbreak_sniffer: ^1.0.9
 #  device_info_plus: ^11.1.0
 #  uqudosdk_flutter:

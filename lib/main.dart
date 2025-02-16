@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:no_screenshot/no_screenshot.dart';
+// import 'package:no_screenshot/no_screenshot.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,17 +37,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.init();
   await EasyLocalization.ensureInitialized();
-  checkDeviceStatus();
-  checkSafeDevice();
-  isAdbEnabled();
-  isFridaRunning();
-  isRootedDevice();
-  isRealDevice();
-  checkJailbreakSniffer();
-  checkPhysicalDevice();
-  performDyldCheck();
-  checkForFrida();
-  performFridaCheck();
+  // checkDeviceStatus();
+  // checkSafeDevice();
+  // isAdbEnabled();
+  // isFridaRunning();
+  // isRootedDevice();
+  // isRealDevice();
+  // checkJailbreakSniffer();
+  // checkPhysicalDevice();
+  // performDyldCheck();
+  // checkForFrida();
+  // performFridaCheck();
   await Permission.camera.request();
   await Permission.microphone.request();
   Injections().setupDependencyInjection();
@@ -80,20 +80,20 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    enableSecureMode();
+    // enableSecureMode();
     // _handleIncomingLinks();
     // _handleInitialUri();
   }
   Future<void> enableSecureMode() async {
-    await disableScreenshot();
+    // await disableScreenshot();
     await ScreenProtector.protectDataLeakageOn();
     await ScreenProtector.preventScreenshotOn();
   }
-  Future<void> disableScreenshot() async {
-    final noScreenshot = NoScreenshot.instance;
-    bool result = await noScreenshot.screenshotOff();
-    debugPrint('Screenshot Off: $result');
-  }
+  // Future<void> disableScreenshot() async {
+  //   final noScreenshot = NoScreenshot.instance;
+  //   bool result = await noScreenshot.screenshotOff();
+  //   debugPrint('Screenshot Off: $result');
+  // }
   @override
   void dispose() {
     _sub?.cancel();

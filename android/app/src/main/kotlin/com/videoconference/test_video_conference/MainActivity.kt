@@ -1,4 +1,4 @@
-package com.conf.borhan
+package com.borh.borhan
 import android.os.Bundle
 import android.view.WindowManager
 import io.flutter.embedding.android.FlutterActivity
@@ -8,7 +8,7 @@ class MainActivity: FlutterActivity() {
         super.onCreate(savedInstanceState)
 //        UniLinksPlugin.registerWith(registrarFor("name.avioli.unilinks.UniLinksPlugin"))
 //        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+//        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 }
 //UniLinksPlugin.registerWith(registrarFor("name.avioli.unilinks.UniLinksPlugin"))
